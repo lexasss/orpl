@@ -78,7 +78,7 @@ public class OrientationTask : MonoBehaviour
                 _isRunning = true;
                 _taskState = TaskState.NotStarted;
                 _trial = _trials.StartBlock();
-                background.SetActive(true);
+                background.SetActive(false);
             }
 
             if (_taskState == TaskState.NotStarted || _taskState == TaskState.AttentionGrabber)
@@ -136,13 +136,13 @@ public class OrientationTask : MonoBehaviour
 
         if (_trial != null)
         {
-            // trialDone.Play();
+            trialDone.Play();
             SetState(TaskState.NotStarted);
         }
         else
         {
             _isRunning = false;
-            background.SetActive(false);
+            // background.SetActive(false);
 
             blockDone.Play();
 

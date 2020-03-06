@@ -79,6 +79,7 @@ public class PlayingLadyTask : MonoBehaviour
                 _isRunning = true;
                 _taskState = TaskState.NotStarted;
                 _trial = _trials.StartBlock();
+                background.SetActive(false);
             }
 
             if (_taskState == TaskState.NotStarted)
@@ -88,7 +89,7 @@ public class PlayingLadyTask : MonoBehaviour
         }
 
         bool enterPressed = Input.GetKeyDown(KeyCode.Return);
-        if (enterPressed && _taskState != TaskState.Finished)
+        if (enterPressed && _taskState != TaskState.NotStarted && _taskState != TaskState.Finished)
         {
             RevertTrial();
         }
@@ -142,13 +143,13 @@ public class PlayingLadyTask : MonoBehaviour
 
         if (_trial != null)
         {
-            // trialDone.Play();
+            trialDone.Play();
             SetState(TaskState.NotStarted);
         }
         else
         {
             _isRunning = false;
-            background.SetActive(false);
+            // background.SetActive(false);
 
             blockDone.Play();
 
@@ -214,7 +215,7 @@ public class PlayingLadyTask : MonoBehaviour
             _player.Stop();
             _log.TrialFinished(_trials.CurrentIndex);
 
-            background.SetActive(true);
+            // background.SetActive(true);
 
             Invoke("ResetState", INTER_TRIAL_MIN_DURATION);
         }
@@ -230,7 +231,7 @@ public class PlayingLadyTask : MonoBehaviour
 
         _focusDetector.SetTrackingObject(null);
         _player.Stop();
-        background.SetActive(true);
+        // background.SetActive(true);
 
         SetState(TaskState.NotStarted);
 
@@ -239,7 +240,7 @@ public class PlayingLadyTask : MonoBehaviour
 
     void onClipStarted(object sender, EventArgs e)
     {
-        background.SetActive(false);
+        // background.SetActive(false);
     }
 
     void onClipStopped(object sender, EventArgs e)
