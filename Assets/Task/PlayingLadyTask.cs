@@ -233,9 +233,9 @@ public class PlayingLadyTask : MonoBehaviour
         _player.Stop();
         // background.SetActive(true);
 
-        SetState(TaskState.NotStarted);
-
         _log.Restart();
+
+        SetState(TaskState.NotStarted);
     }
 
     void onClipStarted(object sender, EventArgs e)
