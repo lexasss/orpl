@@ -5,7 +5,7 @@ public class AttentionGrabber : MonoBehaviour
     // definitions
 
     const float MIN_SCALE = 0.4f;
-    const float SCALE_PHASE_STEP = 0.005f;
+    const float SCALE_PHASE_STEP = 0.01f;
 
     // internal members
 
