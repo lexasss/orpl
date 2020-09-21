@@ -41,6 +41,16 @@ public class HRClient : MonoBehaviour
         SendEvent("OrPL");
     }
 
+    public void StartBaseline()
+    {
+        SendEvent("BL-s");
+    }
+
+    public void StopBaseline()
+    {
+        SendEvent("BL-e");
+    }
+
     public void Stop()
     {
         _netStation.End();

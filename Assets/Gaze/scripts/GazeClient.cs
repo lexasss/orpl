@@ -136,6 +136,16 @@ public class GazeClient : MonoBehaviour
             _ws.Send(GazeIO.Request.toggleTracking);
     }
 
+    public void HideUI()
+    {
+        gazeControls.SetActive(false);
+    }
+
+    public void ShowUI()
+    {
+        gazeControls.SetActive(true);
+    }
+
     // internal methods
 
     void ParseMessage(string aMessage)
@@ -180,9 +190,9 @@ public class GazeClient : MonoBehaviour
         // gaze ui and controls
         options.interactable = !isTracking && !aState.isBusy;
         calibrate.interactable = !isTracking && aState.isConnected && !aState.isBusy;
-        toggleTracking.interactable = aState.isConnected && aState.isCalibrated && !aState.isBusy;
+        toggleTracking.interactable = aState.isConnected && aState.isCalibrated && !aState.isBusy && !isTracking;
         toggleTracking.GetComponentInChildren<Text>().text = isTracking ? "Stop" : "Start";
-        gazeControls.SetActive(!isTracking);
+        //gazeControls.SetActive(!isTracking);
 
         State(this, new EventArgs());
 

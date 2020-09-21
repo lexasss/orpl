@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class BlockFinishedEventArgs : EventArgs
 {
@@ -20,6 +21,7 @@ public class Tasks : MonoBehaviour
     public AudioSource sessionDone;
     public Dropdown participantIDDropdown;
     public AudioSource backgroundAudio;
+    public VideoPlayer baselinePlayer;
 
     // definitions
 
@@ -34,6 +36,8 @@ public class Tasks : MonoBehaviour
 
     GazePoint _gazePoint;
     GazeClient _gazeClient;
+    Button _startBaseline;
+    Button _startTasks;
 
     int _participantID = 1;
 
@@ -50,11 +54,16 @@ public class Tasks : MonoBehaviour
         _hrClient = GetComponent<HRClient>();
         _log = GetComponent<Log>();
 
+        _startBaseline = FindObjectsOfType<Button>().Where(b => b.name == "StartBaseline").First();
+        _startTasks = FindObjectsOfType<Button>().Where(b => b.name == "StartTasks").First();
+
         _gazePoint = FindObjectOfType<GazePoint>();
 
         _gazeClient = FindObjectOfType<GazeClient>();
         _gazeClient.Start += onGazeClientStart;
         _gazeClient.Sample += onGazeClientSample;
+
+        baselinePlayer.loopPointReached += onBaselineStopped;
 
         FillParticipantIDs();
     }
@@ -76,6 +85,28 @@ public class Tasks : MonoBehaviour
     {
         _orientation.NextBlock();
         infoDisplay.text = "";
+    }
+
+    public void StartBaseline()
+    {
+        _gazeClient.HideUI();
+        baselinePlayer.Play();
+
+        _hrClient.StartBaseline();
+    }
+
+    public void StartTasks()
+    {
+        _gazeClient.HideUI();
+
+        backgroundAudio.Play();
+
+        infoDisplay.text = "starting...";
+
+        Invoke("PlayingLadyNextBlock", 0.5f);
+        // Invoke("OrientationNextBlock", 0.5f);
+
+        _hrClient.StartTasks();
     }
 
     public void onParticipantIDChanged(Dropdown aDropdown)
@@ -117,13 +148,10 @@ public class Tasks : MonoBehaviour
         }
         else
         {
-            infoDisplay.text = "starting...";
-            backgroundAudio.Play();
+            _startBaseline.interactable = true;
+            _startTasks.interactable = true;
 
-            Invoke("PlayingLadyNextBlock", 0.5f);
-            // Invoke("OrientationNextBlock", 0.5f);
             _hrClient.Begin();
-            _hrClient.StartTasks();
         }
     }
 
@@ -142,5 +170,11 @@ public class Tasks : MonoBehaviour
         {
             Invoke("PlayingLadyNextBlock", PAUSE_BETWEEN_BLOCKS);
         }
+    }
+
+    void onBaselineStopped(VideoPlayer player)
+    {
+        _gazeClient.ShowUI();
+        _hrClient.StopBaseline();
     }
 }
