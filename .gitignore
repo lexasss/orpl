@@ -64,4 +64,5 @@ crashlytics-build.properties
 
 # Custom
 *.avi
+*.mp4
 log/

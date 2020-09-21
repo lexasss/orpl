@@ -19,6 +19,7 @@ public class Tasks : MonoBehaviour
     public Text infoDisplay;
     public AudioSource sessionDone;
     public Dropdown participantIDDropdown;
+    public AudioSource backgroundAudio;
 
     // definitions
 
@@ -105,8 +106,6 @@ public class Tasks : MonoBehaviour
 
     void onGazeClientStart(object sender, EventArgs e)
     {
-        infoDisplay.text = "starting...";
-
         bool allLoaded = true;
         allLoaded = _playingLady.Load($"{_participantID}_order_") && allLoaded;
         allLoaded = _orientation.Load($"{_participantID}_order_") && allLoaded;
@@ -118,9 +117,13 @@ public class Tasks : MonoBehaviour
         }
         else
         {
+            infoDisplay.text = "starting...";
+            backgroundAudio.Play();
+
             Invoke("PlayingLadyNextBlock", 0.5f);
             // Invoke("OrientationNextBlock", 0.5f);
-            _hrClient.Run();
+            _hrClient.Begin();
+            _hrClient.StartTasks();
         }
     }
 

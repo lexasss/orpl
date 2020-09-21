@@ -31,9 +31,13 @@ public class HRClient : MonoBehaviour
         _netStation.Connect();
     }
 
-    public void Run()
+    public void Begin()
     {
         _netStation.Begin();
+    }
+
+    public void StartTasks()
+    {
         SendEvent("OrPL");
     }
 
