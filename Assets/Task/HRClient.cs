@@ -51,6 +51,26 @@ public class HRClient : MonoBehaviour
         SendEvent("BL-e");
     }
 
+    public void StartPupu(string aType)
+    {
+        SendEvent($"PPs{aType}");
+    }
+
+    public void StopPupu(string aType)
+    {
+        SendEvent($"PPe{aType}");
+    }
+
+    public void PupuDirect()
+    {
+        SendEvent($"PP-d");
+    }
+
+    public void PupuAvert()
+    {
+        SendEvent($"PP-a");
+    }
+
     public void Stop()
     {
         _netStation.End();

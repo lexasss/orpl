@@ -32,6 +32,7 @@ public class GazeClient : MonoBehaviour
 
     WebSocketSharp.WebSocket _ws = null;
     GazeSimulator _simulator = null;
+    Log _log;
 
     Queue<string> _messages = new Queue<string>();
     Vector2 _scale = new Vector2(1f, 1f);
@@ -45,6 +46,8 @@ public class GazeClient : MonoBehaviour
     void Awake()
     {
         gazeControls.SetActive(true);
+
+        _log = FindObjectOfType<Log>();
 
         _smoother = new Smoother<RawPoint>();
         _smoother.saccadeThreshold = 30;
@@ -242,6 +245,8 @@ public class GazeClient : MonoBehaviour
                 rc.x + (rc.width - Screen.width) / 2,
                 rc.y + (rc.height - Screen.height) / 2 + 17 // toolbar
             );
+
+            _log.Dbg($"rect {_offset.x}, {_offset.x}, {Screen.width}, {Screen.height}");
         }
         catch (Exception) { }
 

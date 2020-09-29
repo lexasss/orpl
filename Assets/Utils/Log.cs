@@ -16,6 +16,7 @@ public class Log : MonoBehaviour
     NetStation _netStation;
     StreamWriter _writer;
     List<string> _lastEvents = new List<string>();
+    ulong _gazeTimestamp = 0;
 
     // overrides
     void Start()
@@ -37,6 +38,11 @@ public class Log : MonoBehaviour
     public void HR(string aEvent)
     {
         PushEvent(aEvent);
+    }
+
+    public void Dbg(string aMessage)
+    {
+        WriteLine("Debug", aMessage);
     }
 
     public void Error(string aError)
@@ -102,7 +108,7 @@ public class Log : MonoBehaviour
     {
         if (_writer != null)
         {
-            _writer.WriteLine(String.Join(DELIMITER, new string[] { aTitle, aMessage }));
+            _writer.WriteLine(String.Join(DELIMITER, new string[] { _netStation.Timestamp.ToString(), _gazeTimestamp.ToString(), aTitle, aMessage }));
             Debug.Log($"{aTitle}: {aMessage}");
         }
         else
@@ -120,6 +126,7 @@ public class Log : MonoBehaviour
     void onGazeSample(object sender, EventArgs e)
     {
         var sample = _gazeClient.lastSample;
+        _gazeTimestamp = sample.ts;
 
         lock (_lastEvents)
         {

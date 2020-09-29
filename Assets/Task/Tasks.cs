@@ -115,14 +115,20 @@ public class Tasks : MonoBehaviour
         Debug.Log($"ID = {_participantID}");
     }
 
-    // private methods
-
-    void Finish()
+    public void Finish()
     {
         sessionDone.Play();
         _hrClient.Stop();
         _log.Close();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+         Application.Quit();
+#endif
     }
+
+    // private methods
 
     void FillParticipantIDs()
     {
