@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HRClient : MonoBehaviour
 {
@@ -51,24 +49,19 @@ public class HRClient : MonoBehaviour
         SendEvent("BL-e");
     }
 
-    public void StartPupu(string aType)
+    public void StartAvatarTask(char aID, char aType)
     {
-        SendEvent($"PPs{aType}");
+        SendEvent($"L{aID}s{aType}");
     }
 
-    public void StopPupu(string aType)
+    public void StopAvatarTask(char aID, char aType)
     {
-        SendEvent($"PPe{aType}");
+        SendEvent($"L{aID}e{aType}");
     }
 
-    public void PupuDirect()
+    public void AvatarChangeInteraction(char aID, char aType)
     {
-        SendEvent($"PP-d");
-    }
-
-    public void PupuAvert()
-    {
-        SendEvent($"PP-a");
+        SendEvent($"L{aID}-{aType}");
     }
 
     public void Stop()

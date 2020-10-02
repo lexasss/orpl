@@ -1,15 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class PupuTask : MonoBehaviour
+public class AvatarTask : MonoBehaviour
 {
     // to set in inspector
 
     public AudioSource pupuAudioDirect;
     public AudioSource pupuAudioAvert;
+    public AudioSource nalleAudioDirect;
+    public AudioSource nalleAudioAvert;
     public Image curtain;
     public Color flashColor = new Color(1f, 1f, 1f);
     public float AudioDelay = 5f;
@@ -20,8 +19,9 @@ public class PupuTask : MonoBehaviour
 
     HRClient _hrClient;
     AudioSource _audioToFinish = null;
-    Button _pressedButton = null;
     bool _isWaitingForFinish = false;
+    char _avatarID;
+    char _typeID;
     bool _isAvertSignal;
     Color _curtainColor;
 
@@ -39,10 +39,7 @@ public class PupuTask : MonoBehaviour
             {
                 _isWaitingForFinish = false;
 
-                _pressedButton.interactable = true;
-                _pressedButton = null;
-
-                _hrClient.StopPupu(_audioToFinish == pupuAudioDirect ? "d" : "a");
+                _hrClient.StopAvatarTask(_avatarID, _typeID);
                 CancelInvoke("Signal");
 
                 _audioToFinish = null;
@@ -54,48 +51,70 @@ public class PupuTask : MonoBehaviour
     public void StartPupuDirectTask()
     {
         _audioToFinish = pupuAudioDirect;
-        _pressedButton = FindObjectsOfType<Button>().Single(btn => btn.name.Contains("Direct"));
-        _pressedButton.interactable = false;
+        _avatarID = 'P';
+        _typeID = 'd';
 
-        Invoke("StartListeningForFinish", AudioDelay);  
+        Invoke("StartListeningForFinish", AudioDelay);
+
+        curtain.gameObject.SetActive(true);
     }
 
     public void StartPupuAvertTask()
     {
         _audioToFinish = pupuAudioAvert;
-        _pressedButton = FindObjectsOfType<Button>().Single(btn => btn.name.Contains("Avert"));
-        _pressedButton.interactable = false;
+        _avatarID = 'P';
+        _typeID = 'a';
 
         Invoke("StartListeningForFinish", AudioDelay);
+
+        curtain.gameObject.SetActive(true);
+    }
+
+    public void StartNalleDirectTask()
+    {
+        _audioToFinish = nalleAudioDirect;
+        _avatarID = 'N';
+        _typeID = 'd';
+
+        Invoke("StartListeningForFinish", AudioDelay);
+
+        curtain.gameObject.SetActive(true);
+    }
+
+    public void StartNalleAvertTask()
+    {
+        _audioToFinish = nalleAudioAvert;
+        _avatarID = 'N';
+        _typeID = 'a';
+
+        Invoke("StartListeningForFinish", AudioDelay);
+
+        curtain.gameObject.SetActive(true);
     }
 
     private void StartListeningForFinish()
     {
         _isWaitingForFinish = true;
-        _hrClient.StartPupu(_audioToFinish == pupuAudioDirect ? "d" : "a");
+
+        _hrClient.StartAvatarTask(_avatarID, _typeID);
+
         _audioToFinish.Play();
 
-        _isAvertSignal = _audioToFinish != pupuAudioDirect;
+        _isAvertSignal = _typeID == 'a';
         Invoke("Signal", SignalPause);
 
-        curtain.gameObject.SetActive(true);
+        curtain.color = flashColor;
+        Invoke("SetCurtain", FlashDuration);
     }
 
     private void Signal()
     {
-        if (_isAvertSignal)
-        {
-            _hrClient.PupuAvert();
-        }
-        else
-        {
-            _hrClient.PupuDirect();
-        }
+        _isAvertSignal = !_isAvertSignal;
+        _hrClient.AvatarChangeInteraction(_avatarID, _isAvertSignal ? 'a' : 'd');
+
+        Invoke("Signal", SignalPause);
 
         curtain.color = flashColor;
-
-        _isAvertSignal = !_isAvertSignal;
-        Invoke("Signal", SignalPause);
         Invoke("SetCurtain", FlashDuration);
     }
 

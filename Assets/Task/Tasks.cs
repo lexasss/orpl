@@ -22,6 +22,8 @@ public class Tasks : MonoBehaviour
     public Dropdown participantIDDropdown;
     public AudioSource backgroundAudio;
     public VideoPlayer baselinePlayer;
+    public Button baselineButton;
+    public Button tasksButton;
 
     // definitions
 
@@ -36,8 +38,6 @@ public class Tasks : MonoBehaviour
 
     GazePoint _gazePoint;
     GazeClient _gazeClient;
-    Button _startBaseline;
-    Button _startTasks;
 
     int _participantID = 1;
 
@@ -53,9 +53,6 @@ public class Tasks : MonoBehaviour
 
         _hrClient = GetComponent<HRClient>();
         _log = GetComponent<Log>();
-
-        _startBaseline = FindObjectsOfType<Button>().Where(b => b.name == "StartBaseline").First();
-        _startTasks = FindObjectsOfType<Button>().Where(b => b.name == "StartTasks").First();
 
         _gazePoint = FindObjectOfType<GazePoint>();
 
@@ -154,8 +151,8 @@ public class Tasks : MonoBehaviour
         }
         else
         {
-            _startBaseline.interactable = true;
-            _startTasks.interactable = true;
+            baselineButton.interactable = true;
+            tasksButton.interactable = true;
 
             _hrClient.Begin();
         }
