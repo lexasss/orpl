@@ -11,9 +11,9 @@ public class AvatarTask : MonoBehaviour
     public AudioSource nalleAudioAvert;
     public Image curtain;
     public Color flashColor = new Color(1f, 1f, 1f);
-    public float AudioDelay = 5f;
-    public float SignalPause = 30f;
-    public float FlashDuration = 0.2f;
+    public float audioDelay = 5f;
+    public float modeDuration = 30f;
+    public float flashDuration = 0.2f;
 
     // vars
 
@@ -21,8 +21,8 @@ public class AvatarTask : MonoBehaviour
     AudioSource _audioToFinish = null;
     bool _isWaitingForFinish = false;
     char _avatarID;
-    char _typeID;
-    bool _isAvertSignal;
+    char _modeID;
+    bool _isAvertMode;
     Color _curtainColor;
 
     void Start()
@@ -39,7 +39,7 @@ public class AvatarTask : MonoBehaviour
             {
                 _isWaitingForFinish = false;
 
-                _hrClient.StopAvatarTask(_avatarID, _typeID);
+                _hrClient.StopAvatarTask(_avatarID, _modeID);
                 CancelInvoke("Signal");
 
                 _audioToFinish = null;
@@ -52,9 +52,9 @@ public class AvatarTask : MonoBehaviour
     {
         _audioToFinish = pupuAudioDirect;
         _avatarID = 'P';
-        _typeID = 'd';
+        _modeID = 'd';
 
-        Invoke("StartListeningForFinish", AudioDelay);
+        Invoke("StartListeningForFinish", audioDelay);
 
         curtain.gameObject.SetActive(true);
     }
@@ -63,9 +63,9 @@ public class AvatarTask : MonoBehaviour
     {
         _audioToFinish = pupuAudioAvert;
         _avatarID = 'P';
-        _typeID = 'a';
+        _modeID = 'a';
 
-        Invoke("StartListeningForFinish", AudioDelay);
+        Invoke("StartListeningForFinish", audioDelay);
 
         curtain.gameObject.SetActive(true);
     }
@@ -74,9 +74,9 @@ public class AvatarTask : MonoBehaviour
     {
         _audioToFinish = nalleAudioDirect;
         _avatarID = 'N';
-        _typeID = 'd';
+        _modeID = 'd';
 
-        Invoke("StartListeningForFinish", AudioDelay);
+        Invoke("StartListeningForFinish", audioDelay);
 
         curtain.gameObject.SetActive(true);
     }
@@ -85,9 +85,9 @@ public class AvatarTask : MonoBehaviour
     {
         _audioToFinish = nalleAudioAvert;
         _avatarID = 'N';
-        _typeID = 'a';
+        _modeID = 'a';
 
-        Invoke("StartListeningForFinish", AudioDelay);
+        Invoke("StartListeningForFinish", audioDelay);
 
         curtain.gameObject.SetActive(true);
     }
@@ -96,26 +96,27 @@ public class AvatarTask : MonoBehaviour
     {
         _isWaitingForFinish = true;
 
-        _hrClient.StartAvatarTask(_avatarID, _typeID);
+        _hrClient.StartAvatarTask(_avatarID, _modeID);
 
         _audioToFinish.Play();
 
-        _isAvertSignal = _typeID == 'a';
-        Invoke("Signal", SignalPause);
+        _isAvertMode = _modeID == 'a';
+        Invoke("Signal", modeDuration);
 
         curtain.color = flashColor;
-        Invoke("SetCurtain", FlashDuration);
+        Invoke("SetCurtain", flashDuration);
     }
 
     private void Signal()
     {
-        _isAvertSignal = !_isAvertSignal;
-        _hrClient.AvatarChangeInteraction(_avatarID, _isAvertSignal ? 'a' : 'd');
+        _isAvertMode = !_isAvertMode;
+        _hrClient.AvatarChangeInteraction(_avatarID, _isAvertMode ? 'a' : 'd');
 
-        Invoke("Signal", SignalPause);
+        Invoke("Signal", modeDuration);
 
-        curtain.color = flashColor;
-        Invoke("SetCurtain", FlashDuration);
+        // flashing at each signal
+        // curtain.color = flashColor;
+        // Invoke("SetCurtain", FlashDuration);
     }
 
     private void SetCurtain()
