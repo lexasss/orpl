@@ -66,8 +66,8 @@ public class GazeSimulator : MonoBehaviour
 
         _offset = new Vector2(
             rc.x + (rc.width - Screen.width) / 2,
-            rc.y + (rc.height - Screen.height) / 2 + TOOLBAR_HEIGHT
-        );
+            rc.y + (rc.height - Screen.height) / 2 + (Application.isEditor ? TOOLBAR_HEIGHT : 0)
+        ); ;
 
         _state.type = GazeIO.MessageType.state;
         _state.value = (int)GazeIO.StateValue.Connected | (int)GazeIO.StateValue.Calibrated;
@@ -107,7 +107,7 @@ public class GazeSimulator : MonoBehaviour
 
         float x, y;
         MouseToGaze(out x, out y);
-
+        
         Sample(this, new SampleArgs(_timeStamp, x, y, 6.0f));
     }
 
