@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FocusDetector : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class FocusDetector : MonoBehaviour
     GazeClient _gaze;
 
     int _gazeOnObjectCount = 0;
+
+    Text _debug = null;
 
     // overrides
 
@@ -54,6 +57,11 @@ public class FocusDetector : MonoBehaviour
         _gazeOnObjectCount = 0;
     }
 
+    public void SetDebugOutput(Text aDebug)
+    {
+        _debug = aDebug;
+    }
+
     // internal methods
 
     void onSample(object sender, EventArgs e)
@@ -68,9 +76,12 @@ public class FocusDetector : MonoBehaviour
                 _isFocused = true;
                 Focused(this, new EventArgs());
             }
-            else
+
+            _gazeOnObjectCount = Math.Max(0, newGazePointCount);
+
+            if (_debug != null)
             {
-                _gazeOnObjectCount = Math.Max(0, newGazePointCount);
+                _debug.text = _gazeOnObjectCount.ToString();
             }
         }
     }

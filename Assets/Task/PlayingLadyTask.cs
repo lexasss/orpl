@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayingLadyTask : MonoBehaviour
 {
@@ -8,7 +9,8 @@ public class PlayingLadyTask : MonoBehaviour
     public GameObject background;
     public GameObject headArea;
     public AudioSource[] sounds;
-    
+    public Text debug;
+
     // public members
 
     public event EventHandler<BlockFinishedEventArgs> BlockFinished = delegate { };
@@ -57,6 +59,7 @@ public class PlayingLadyTask : MonoBehaviour
         _log = GetComponent<Log>();
 
         _focusDetector = FindObjectOfType<FocusDetector>();
+        _focusDetector.SetDebugOutput(debug);
         _focusDetector.Focused += onHeadAreaFocused;
 
         _player = FindObjectOfType<PlayingLadyPlayer>();

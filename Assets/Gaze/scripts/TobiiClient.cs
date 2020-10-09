@@ -86,11 +86,14 @@ public class TobiiClient : MonoBehaviour
     {
         if (lastSample != null)
         {
+            Sample sample;
             lock (lastSample)
             {
-                Data(this, lastSample);
+                sample = Sample.Copy(lastSample);
                 lastSample = null;
             }
+
+            Data(this, sample);
         }
     }
 
@@ -111,20 +114,32 @@ public class TobiiClient : MonoBehaviour
         if ((eye == Eye.Left && leftIsValid) ||
             (eye == Eye.Both && !rightIsValid))
         {
-            sample.p = left.Pupil.PupilDiameter;
+            sample.p = float.IsNaN(left.Pupil.PupilDiameter) ? 0 : left.Pupil.PupilDiameter;
             sample.x = gpLeft.X * Screen.width;
             sample.y = gpLeft.Y * Screen.height;
         }
         else if ((eye == Eye.Right && rightIsValid) ||
                  (eye == Eye.Both && !leftIsValid))
         {
-            sample.p = right.Pupil.PupilDiameter;
+            sample.p = float.IsNaN(right.Pupil.PupilDiameter) ? 0 : right.Pupil.PupilDiameter;
             sample.x = gpRight.X * Screen.width;
             sample.y = gpRight.Y * Screen.height;
         }
         else if (eye == Eye.Both && leftIsValid && rightIsValid)
         {
-            sample.p = (left.Pupil.PupilDiameter + right.Pupil.PupilDiameter) / 2;
+            if (float.IsNaN(right.Pupil.PupilDiameter))
+            {
+                sample.p = left.Pupil.PupilDiameter;
+            }
+            else if (float.IsNaN(left.Pupil.PupilDiameter))
+            {
+                sample.p = right.Pupil.PupilDiameter;
+            }
+            else
+            {
+                sample.p = (left.Pupil.PupilDiameter + right.Pupil.PupilDiameter) / 2;
+            }
+
             sample.x = (gpLeft.X + gpRight.X) / 2 * Screen.width;
             sample.y = (gpLeft.Y + gpRight.Y) / 2 * Screen.height;
         }
@@ -133,6 +148,9 @@ public class TobiiClient : MonoBehaviour
             sample.x = -Screen.width;
             sample.y = -Screen.height;
         }
+
+        sample.x = (float)Math.Round(sample.x);
+        sample.y = (float)Math.Round(sample.y);
 
         if (lastSample != null)
         {

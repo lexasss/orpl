@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine.Rendering;
 
 /**
  * <summary>Definitions of structures and constants used in communication with ETUDriver service</summary>
@@ -95,5 +96,20 @@ namespace GazeIO
         public EyesInCamera ec = new EyesInCamera();
 
         public bool isValid { get { return type == MessageType.sample; } }
+
+        public static Sample Copy(Sample aRef)
+        {
+            Sample s = new Sample();
+            s.type = MessageType.sample;
+            s.ts = aRef.ts;
+            s.x = aRef.x;
+            s.y = aRef.y;
+            s.p = aRef.p;
+            s.ec.xl = aRef.ec.xl;
+            s.ec.yl = aRef.ec.yl;
+            s.ec.xr = aRef.ec.xr;
+            s.ec.yr = aRef.ec.yr;
+            return s;
+        }
     }
 }

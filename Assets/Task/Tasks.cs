@@ -39,8 +39,6 @@ public class Tasks : MonoBehaviour
     GazePoint _gazePoint;
     GazeClient _gazeClient;
 
-    int _participantID = 1;
-
     // overrides
 
     void Start()
@@ -120,8 +118,7 @@ public class Tasks : MonoBehaviour
 
     public void onParticipantIDChanged(Dropdown aDropdown)
     {
-        _participantID = aDropdown.value + 1;
-        Debug.Log($"ID = {_participantID}");
+        Debug.Log($"session ID = {participantIDDropdown.options[participantIDDropdown.value]}");
     }
 
     public void Finish()
@@ -143,8 +140,12 @@ public class Tasks : MonoBehaviour
     {
         var orderFiles = System.IO.Directory.EnumerateFiles(Trials<PlayingLadyTrial>.FOLDER)
             .Where(file => file.Contains("orientation"))
-            .Select((file, i) => (i + 1).ToString())
+            //.Select((file, i) => (i + 1).ToString())
+            .Select(file => file.Split('/', '\\').Last())
+            .Select(file => file.Split('_')[0])
             .ToList();
+
+        orderFiles.Sort();
 
         participantIDDropdown.ClearOptions();
         participantIDDropdown.AddOptions(orderFiles);
@@ -153,8 +154,11 @@ public class Tasks : MonoBehaviour
     void onGazeClientStart(object sender, EventArgs e)
     {
         bool allLoaded = true;
-        allLoaded = _playingLady.Load($"{_participantID}_order_") && allLoaded;
-        allLoaded = _orientation.Load($"{_participantID}_order_") && allLoaded;
+
+        var sessionID = participantIDDropdown.options[participantIDDropdown.value].text;
+
+        allLoaded = _playingLady.Load($"{sessionID}_order_") && allLoaded;
+        allLoaded = _orientation.Load($"{sessionID}_order_") && allLoaded;
 
         if (!allLoaded)
         {
