@@ -8412,7 +8412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaddcfc50e2e78a4f991b3fa689224af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simulate: 0
+  simulate: 1
   gazeControls: {fileID: 1726411737467319}
   options: {fileID: 114962048271802433}
   calibrate: {fileID: 114729727883821785}
@@ -8446,7 +8446,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f08bcdec0288c5a4b98735553f6334d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eye: 1
 --- !u!1 &2030246741
 GameObject:
   m_ObjectHideFlags: 0

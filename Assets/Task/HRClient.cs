@@ -131,5 +131,10 @@ public class HRClient : MonoBehaviour
     void onNetStationMessage(object sender, NetStation.StateChangedEventArgs e)
     {
         status.text = e.Message;
+
+        if (e.State == NetStation.State.CONNECTED)
+        {
+            Invoke("Begin", 1);
+        }
     }
 }

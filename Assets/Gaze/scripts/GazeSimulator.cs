@@ -66,7 +66,7 @@ public class GazeSimulator : MonoBehaviour
 
         _offset = new Vector2(
             rc.x + (rc.width - Screen.width) / 2,
-            rc.y + (rc.height - Screen.height) / 2 + (Application.isEditor ? TOOLBAR_HEIGHT : 0)
+            rc.y + (rc.height - Screen.height) / 2 + TOOLBAR_HEIGHT
         ); ;
 
         _state.type = GazeIO.MessageType.state;

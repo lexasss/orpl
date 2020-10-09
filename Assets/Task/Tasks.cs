@@ -72,8 +72,7 @@ public class Tasks : MonoBehaviour
             if (baselinePlayer.isPlaying)
             {
                 baselinePlayer.Stop();
-                _gazeClient.ShowUI();
-                _hrClient.StopBaseline();
+                onBaselineStopped(null);
             }
         }
     }
@@ -166,8 +165,6 @@ public class Tasks : MonoBehaviour
         {
             baselineButton.interactable = true;
             tasksButton.interactable = true;
-
-            _hrClient.Begin();
         }
     }
 

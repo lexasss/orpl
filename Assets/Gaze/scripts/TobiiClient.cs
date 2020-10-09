@@ -98,30 +98,35 @@ public class TobiiClient : MonoBehaviour
     {
         var left = e.LeftEye;
         var right = e.RightEye;
+        var gpLeft = left.GazePoint.PositionOnDisplayArea;
+        var gpRight = right.GazePoint.PositionOnDisplayArea;
 
         Sample sample = new Sample();
         sample.type = MessageType.sample;
         sample.ts = (ulong)(e.SystemTimeStamp / 1000);
 
-        if ((eye == Eye.Left && left.GazePoint.Validity == Validity.Valid) ||
-            (eye == Eye.Both && right.GazePoint.Validity == Validity.Invalid))
+        var leftIsValid = !float.IsNaN(gpLeft.X) && !float.IsNaN(gpLeft.Y);
+        var rightIsValid = !float.IsNaN(gpRight.X) && !float.IsNaN(gpRight.Y);
+
+        if ((eye == Eye.Left && leftIsValid) ||
+            (eye == Eye.Both && !rightIsValid))
         {
             sample.p = left.Pupil.PupilDiameter;
-            sample.x = left.GazePoint.PositionOnDisplayArea.X * Screen.width;
-            sample.y = left.GazePoint.PositionOnDisplayArea.Y * Screen.height;
+            sample.x = gpLeft.X * Screen.width;
+            sample.y = gpLeft.Y * Screen.height;
         }
-        else if ((eye == Eye.Right && right.GazePoint.Validity == Validity.Valid) ||
-                 (eye == Eye.Both && left.GazePoint.Validity == Validity.Invalid))
+        else if ((eye == Eye.Right && rightIsValid) ||
+                 (eye == Eye.Both && !leftIsValid))
         {
             sample.p = right.Pupil.PupilDiameter;
-            sample.x = right.GazePoint.PositionOnDisplayArea.X * Screen.width;
-            sample.y = right.GazePoint.PositionOnDisplayArea.Y * Screen.height;
+            sample.x = gpRight.X * Screen.width;
+            sample.y = gpRight.Y * Screen.height;
         }
-        else if (eye == Eye.Both && left.GazePoint.Validity == Validity.Valid && right.GazePoint.Validity == Validity.Valid)
+        else if (eye == Eye.Both && leftIsValid && rightIsValid)
         {
             sample.p = (left.Pupil.PupilDiameter + right.Pupil.PupilDiameter) / 2;
-            sample.x = (left.GazePoint.PositionOnDisplayArea.X + right.GazePoint.PositionOnDisplayArea.X) / 2 * Screen.width;
-            sample.y = (left.GazePoint.PositionOnDisplayArea.Y + right.GazePoint.PositionOnDisplayArea.Y) / 2 * Screen.height;
+            sample.x = (gpLeft.X + gpRight.X) / 2 * Screen.width;
+            sample.y = (gpLeft.Y + gpRight.Y) / 2 * Screen.height;
         }
         else
         {
