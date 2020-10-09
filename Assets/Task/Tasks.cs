@@ -65,6 +65,19 @@ public class Tasks : MonoBehaviour
         FillParticipantIDs();
     }
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            if (baselinePlayer.isPlaying)
+            {
+                baselinePlayer.Stop();
+                _gazeClient.ShowUI();
+                _hrClient.StopBaseline();
+            }
+        }
+    }
+
     private void onGazeClientSample(object sender, EventArgs e)
     {
         _gazePoint.MoveTo(_gazeClient.lastSample);
