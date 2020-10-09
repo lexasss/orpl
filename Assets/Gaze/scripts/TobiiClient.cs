@@ -9,7 +9,7 @@ public class TobiiClient : MonoBehaviour
 {
     public enum Eye { Left, Right, Both }
 
-    public Eye eye = Eye.Both;
+    public Eye eye { get; set; } = Eye.Both;
 
     public event EventHandler<string> Error = delegate { };
     public event EventHandler<string> Ready = delegate { };
@@ -42,6 +42,15 @@ public class TobiiClient : MonoBehaviour
 
             _isStreaming = !_isStreaming;
             Toggled(this, _isStreaming);
+        }
+    }
+
+    public void Close()
+    {
+        if (_eyeTracker != null)
+        {
+            _eyeTracker.Dispose();
+            _eyeTracker = null;
         }
     }
 

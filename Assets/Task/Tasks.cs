@@ -114,14 +114,14 @@ public class Tasks : MonoBehaviour
 
     public void Finish()
     {
-        sessionDone.Play();
+        // sessionDone.Play();
         _hrClient.Stop();
         _log.Close();
 
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
-         Application.Quit();
+        Application.Quit();
 #endif
     }
 

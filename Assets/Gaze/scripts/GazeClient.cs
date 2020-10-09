@@ -123,13 +123,27 @@ public class GazeClient : MonoBehaviour
     void OnDestroy()
     {
         if (_ws != null)
+        { 
             _ws.Close();
+        }
+        if (_tobii != null)
+        {
+            _tobii.Close();
+            _tobii = null;
+        }
     }
 
     void OnApplicationQuit()
     {
         if (_ws != null && isTracking && _hasInitiatedTracking)
+        {
             _ws.Send(GazeIO.Request.toggleTracking);
+        }
+        if (_tobii != null && isTracking && _hasInitiatedTracking)
+        {
+            _tobii.Close();
+            _tobii = null;
+        }
     }
 
     // public methods
@@ -252,7 +266,7 @@ public class GazeClient : MonoBehaviour
         Vector2 location = GazeToGameWindow(aSample);
 
         this.location = _smoother.Feed(new RawPoint(aSample.ts, location.x, location.y));
-        debug.text = $"S = {aSample.x:N0} {aSample.y:N0}; F = {this.location.x:N0} {this.location.y:N0}";
+        // debug.text = $"S = {aSample.x:N0} {aSample.y:N0}; F = {this.location.x:N0} {this.location.y:N0}";
 
         Sample(this, new EventArgs());
     }
