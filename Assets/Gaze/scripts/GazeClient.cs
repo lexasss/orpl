@@ -308,6 +308,11 @@ public class GazeClient : MonoBehaviour
     private void onTobiiToggled(object sender, bool isTracking)
     {
         tobiiToggleTracking.GetComponentInChildren<Text>().text = isTracking ? "Stop" : "Start";
+
+        if (isTracking)
+            Start(this, new EventArgs());
+        else
+            Stop(this, new EventArgs());
     }
 
     private void onTobiiData(object sender, GazeIO.Sample sample)
