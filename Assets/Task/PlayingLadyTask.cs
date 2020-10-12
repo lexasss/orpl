@@ -59,7 +59,7 @@ public class PlayingLadyTask : MonoBehaviour
         _log = GetComponent<Log>();
 
         _focusDetector = FindObjectOfType<FocusDetector>();
-        _focusDetector.SetDebugOutput(debug);
+        // _focusDetector.SetDebugOutput(debug);
         _focusDetector.Focused += onHeadAreaFocused;
 
         _player = FindObjectOfType<PlayingLadyPlayer>();

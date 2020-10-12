@@ -10,10 +10,11 @@ public class AvatarTask : MonoBehaviour
     public AudioSource nalleAudioDirect;
     public AudioSource nalleAudioAvert;
     public Image curtain;
+    public float flashDuration = 0.2f;
+    public float flashDelay = 5f;
     public Color flashColor = new Color(1f, 1f, 1f);
     public float audioDelay = 5f;
     public float modeDuration = 30f;
-    public float flashDuration = 0.2f;
 
     // vars
 
@@ -54,7 +55,7 @@ public class AvatarTask : MonoBehaviour
         _avatarID = 'P';
         _modeID = 'd';
 
-        Invoke("StartListeningForFinish", audioDelay);
+        Invoke("Flash", flashDelay);
 
         curtain.gameObject.SetActive(true);
     }
@@ -65,7 +66,7 @@ public class AvatarTask : MonoBehaviour
         _avatarID = 'P';
         _modeID = 'a';
 
-        Invoke("StartListeningForFinish", audioDelay);
+        Invoke("Flash", flashDelay);
 
         curtain.gameObject.SetActive(true);
     }
@@ -76,7 +77,7 @@ public class AvatarTask : MonoBehaviour
         _avatarID = 'N';
         _modeID = 'd';
 
-        Invoke("StartListeningForFinish", audioDelay);
+        Invoke("Flash", flashDelay);
 
         curtain.gameObject.SetActive(true);
     }
@@ -87,24 +88,30 @@ public class AvatarTask : MonoBehaviour
         _avatarID = 'N';
         _modeID = 'a';
 
-        Invoke("StartListeningForFinish", audioDelay);
+        Invoke("Flash", flashDelay);
 
         curtain.gameObject.SetActive(true);
+    }
+
+    private void Flash()
+    {
+        curtain.color = flashColor;
+        Invoke("SetCurtain", flashDuration);
+
+        Invoke("StartListeningForFinish", audioDelay);
+        _hrClient.StartAvatarTask(_avatarID, _modeID);
     }
 
     private void StartListeningForFinish()
     {
         _isWaitingForFinish = true;
 
-        _hrClient.StartAvatarTask(_avatarID, _modeID);
+        _hrClient.AvatarChangeInteraction(_avatarID, _isAvertMode ? 'a' : 'd');
 
         _audioToFinish.Play();
 
         _isAvertMode = _modeID == 'a';
         Invoke("Signal", modeDuration);
-
-        curtain.color = flashColor;
-        Invoke("SetCurtain", flashDuration);
     }
 
     private void Signal()

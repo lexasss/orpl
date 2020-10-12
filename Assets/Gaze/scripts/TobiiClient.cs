@@ -7,7 +7,12 @@ using GazeIO;
 
 public class TobiiClient : MonoBehaviour
 {
-    public enum Eye { Left, Right, Both }
+    public enum Eye
+    {
+        Left = 0,
+        Right = 1,
+        Both = 2
+    }
 
     public Eye eye { get; set; } = Eye.Both;
 
@@ -104,42 +109,57 @@ public class TobiiClient : MonoBehaviour
         var gpLeft = left.GazePoint.PositionOnDisplayArea;
         var gpRight = right.GazePoint.PositionOnDisplayArea;
 
-        Sample sample = new Sample();
-        sample.type = MessageType.sample;
-        sample.ts = (ulong)(e.SystemTimeStamp / 1000);
-
-        var leftIsValid = !float.IsNaN(gpLeft.X) && !float.IsNaN(gpLeft.Y);
-        var rightIsValid = !float.IsNaN(gpRight.X) && !float.IsNaN(gpRight.Y);
-
-        if ((eye == Eye.Left && leftIsValid) ||
-            (eye == Eye.Both && !rightIsValid))
+        Sample sample = new Sample
         {
-            sample.p = float.IsNaN(left.Pupil.PupilDiameter) ? 0 : left.Pupil.PupilDiameter;
+            type = MessageType.sample,
+            ts = (ulong)(e.SystemTimeStamp / 1000),
+            p = 0
+        };
+
+        /* /////////////
+
+        if (!float.IsNaN(gpRight.X) && !float.IsNaN(gpRight.Y))
+        {
+            sample.x = (float)Math.Round(gpRight.X * Screen.width);
+            sample.y = (float)Math.Round(gpRight.Y * Screen.height);
+        }
+        else
+        {
+            sample.x = -Screen.width;
+            sample.y = -Screen.height;
+        }
+
+        if (lastSample != null)
+        {
+            lock (lastSample)
+            {
+                lastSample = sample;
+            }
+        }
+        else
+        {
+            lastSample = sample;
+        }
+        return;
+
+        ///////////// */
+
+        // sample
+        var leftPointIsValid = !float.IsNaN(gpLeft.X) && !float.IsNaN(gpLeft.Y);
+        var rightPointIsValid = !float.IsNaN(gpRight.X) && !float.IsNaN(gpRight.Y);
+
+        if (leftPointIsValid && (eye == Eye.Left || (eye == Eye.Both && !rightPointIsValid)))
+        {
             sample.x = gpLeft.X * Screen.width;
             sample.y = gpLeft.Y * Screen.height;
         }
-        else if ((eye == Eye.Right && rightIsValid) ||
-                 (eye == Eye.Both && !leftIsValid))
+        else if (rightPointIsValid && (eye == Eye.Right || (eye == Eye.Both && !leftPointIsValid)))
         {
-            sample.p = float.IsNaN(right.Pupil.PupilDiameter) ? 0 : right.Pupil.PupilDiameter;
             sample.x = gpRight.X * Screen.width;
             sample.y = gpRight.Y * Screen.height;
         }
-        else if (eye == Eye.Both && leftIsValid && rightIsValid)
+        else if (eye == Eye.Both && leftPointIsValid && rightPointIsValid)
         {
-            if (float.IsNaN(right.Pupil.PupilDiameter))
-            {
-                sample.p = left.Pupil.PupilDiameter;
-            }
-            else if (float.IsNaN(left.Pupil.PupilDiameter))
-            {
-                sample.p = right.Pupil.PupilDiameter;
-            }
-            else
-            {
-                sample.p = (left.Pupil.PupilDiameter + right.Pupil.PupilDiameter) / 2;
-            }
-
             sample.x = (gpLeft.X + gpRight.X) / 2 * Screen.width;
             sample.y = (gpLeft.Y + gpRight.Y) / 2 * Screen.height;
         }
@@ -151,6 +171,29 @@ public class TobiiClient : MonoBehaviour
 
         sample.x = (float)Math.Round(sample.x);
         sample.y = (float)Math.Round(sample.y);
+
+        // pupil
+        var leftPupilIsValid = !float.IsNaN(left.Pupil.PupilDiameter);
+        var rightPupilIsValid = !float.IsNaN(right.Pupil.PupilDiameter);
+
+        if (leftPupilIsValid && (eye == Eye.Left || (eye == Eye.Both && !rightPupilIsValid)))
+        {
+            sample.p = left.Pupil.PupilDiameter;
+        }
+        else if (rightPupilIsValid && (eye == Eye.Right || (eye == Eye.Both && !leftPupilIsValid)))
+        {
+            sample.p = right.Pupil.PupilDiameter;
+        }
+        else if (eye == Eye.Both && leftPupilIsValid && rightPupilIsValid)
+        {
+            sample.p = (left.Pupil.PupilDiameter + right.Pupil.PupilDiameter) / 2;
+        }
+        else
+        {
+            sample.p = 0;
+        }
+
+        // update sample storage
 
         if (lastSample != null)
         {

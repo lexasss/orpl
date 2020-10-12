@@ -2667,7 +2667,7 @@ GameObject:
   - component: {fileID: 557889760}
   - component: {fileID: 557889761}
   m_Layer: 0
-  m_Name: avatar-buttons
+  m_Name: puppet-buttons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5133,7 +5133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1267954355}
   m_Layer: 0
-  m_Name: avatar-task-audios
+  m_Name: puppet-task-audios
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5420,7 +5420,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 0
+  m_Text: 
 --- !u!222 &1359992122
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7923,7 +7923,7 @@ GameObject:
   - component: {fileID: 1886070395}
   - component: {fileID: 1886070394}
   m_Layer: 0
-  m_Name: avatar-tasks
+  m_Name: puppet-tasks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7999,7 +7999,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Avatar tasks
+  m_Text: Puppet tasks
 --- !u!222 &1886070396
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8491,7 +8491,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaddcfc50e2e78a4f991b3fa689224af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simulate: 1
+  simulate: 0
   gazeControls: {fileID: 1726411737467319}
   options: {fileID: 114962048271802433}
   calibrate: {fileID: 114729727883821785}
