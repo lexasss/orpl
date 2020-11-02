@@ -189,11 +189,13 @@ public class GazeClient : MonoBehaviour
     public void HideUI()
     {
         gazeControls.SetActive(false);
+        Cursor.visible = false;
     }
 
     public void ShowUI()
     {
         gazeControls.SetActive(true);
+        Cursor.visible = true;
     }
 
     // internal methods

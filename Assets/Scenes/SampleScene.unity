@@ -6608,10 +6608,11 @@ MonoBehaviour:
   nalleAudioDirect: {fileID: 2082913926}
   nalleAudioAvert: {fileID: 813296718}
   curtain: {fileID: 2136091279}
+  flashDuration: 0.2
+  flashDelay: 5
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   audioDelay: 5
   modeDuration: 30
-  flashDuration: 0.2
 --- !u!1 &1593924525
 GameObject:
   m_ObjectHideFlags: 0
@@ -8491,7 +8492,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaddcfc50e2e78a4f991b3fa689224af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simulate: 0
+  simulate: 1
   gazeControls: {fileID: 1726411737467319}
   options: {fileID: 114962048271802433}
   calibrate: {fileID: 114729727883821785}
