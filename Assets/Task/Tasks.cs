@@ -97,6 +97,8 @@ public class Tasks : MonoBehaviour
     public void StartBaseline()
     {
         _gazeClient.HideUI();
+
+        baselinePlayer.gameObject.SetActive(true);
         baselinePlayer.Play();
 
         _hrClient.StartBaseline();
@@ -193,5 +195,6 @@ public class Tasks : MonoBehaviour
     {
         _gazeClient.ShowUI();
         _hrClient.StopBaseline();
+        baselinePlayer.gameObject.SetActive(false);
     }
 }
