@@ -17,6 +17,7 @@ public class GazeIOControls : MonoBehaviour
 
     void Update()
     {
+        /*
         if (_gazeClient.isTracking)
         {
             if (!_blockInput && Input.GetKey(KeyCode.Escape))
@@ -28,7 +29,7 @@ public class GazeIOControls : MonoBehaviour
         else
         {
             _blockInput = false;
-        }
+        }*/
     }
 
     // public methods

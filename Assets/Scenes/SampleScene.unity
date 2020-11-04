@@ -8492,7 +8492,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaddcfc50e2e78a4f991b3fa689224af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  simulate: 1
+  simulate: 0
   gazeControls: {fileID: 1726411737467319}
   options: {fileID: 114962048271802433}
   calibrate: {fileID: 114729727883821785}

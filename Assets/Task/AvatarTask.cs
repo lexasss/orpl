@@ -34,6 +34,14 @@ public class AvatarTask : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            if (_audioToFinish.isPlaying)
+            {
+                _audioToFinish.Stop();
+            }
+        }
+
         if (_isWaitingForFinish && _audioToFinish)
         {
             if (!_audioToFinish.isPlaying)
@@ -106,11 +114,11 @@ public class AvatarTask : MonoBehaviour
     {
         _isWaitingForFinish = true;
 
+        _isAvertMode = _modeID == 'a';
         _hrClient.AvatarChangeInteraction(_avatarID, _isAvertMode ? 'a' : 'd');
 
         _audioToFinish.Play();
 
-        _isAvertMode = _modeID == 'a';
         Invoke("Signal", modeDuration);
     }
 
