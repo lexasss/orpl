@@ -254,7 +254,10 @@ public class GazeClient : MonoBehaviour
         State(this, new EventArgs());
 
         if (isTracking && !_trackingInitialized)
+        {
             InitializeTracking();
+            _log.ClearEvents();
+        }
 
         if (trackingChanged)
         {
@@ -262,9 +265,13 @@ public class GazeClient : MonoBehaviour
             GetComponent<StandaloneInputModule>().enabled = !isTracking;
 
             if (isTracking)
+            {
                 Start(this, new EventArgs());
+            }
             else
+            {
                 Stop(this, new EventArgs());
+            }
         }
     }
 
@@ -300,8 +307,6 @@ public class GazeClient : MonoBehaviour
                 rc.x + (rc.width - Screen.width) / 2,
                 rc.y + (rc.height - Screen.height) / 2 + (Application.isEditor ? 17 : 0) // toolbar
             );
-
-            _log.Dbg($"rect {_offset.x}, {_offset.x}, {Screen.width}, {Screen.height}");
         }
         catch (Exception) { }
 
@@ -331,9 +336,14 @@ public class GazeClient : MonoBehaviour
         tobiiToggleTracking.GetComponentInChildren<Text>().text = isTracking ? "Stop" : "Start";
 
         if (isTracking)
+        {
+            _log.ClearEvents();
             Start(this, new EventArgs());
+        }
         else
+        {
             Stop(this, new EventArgs());
+        }
     }
 
     private void onTobiiData(object sender, GazeIO.Sample sample)
