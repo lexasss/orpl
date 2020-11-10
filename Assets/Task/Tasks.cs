@@ -24,6 +24,7 @@ public class Tasks : MonoBehaviour
     public VideoPlayer baselinePlayer;
     public Button baselineButton;
     public Button tasksButton;
+    public VideoPlayer playingLadyPlayer;
 
     // definitions
 
@@ -107,6 +108,7 @@ public class Tasks : MonoBehaviour
     public void StartTasks()
     {
         _gazeClient.HideUI();
+        playingLadyPlayer.gameObject.SetActive(true);
 
         backgroundAudio.Play();
 
@@ -123,7 +125,7 @@ public class Tasks : MonoBehaviour
         Debug.Log($"session ID = {participantIDDropdown.options[participantIDDropdown.value]}");
     }
 
-    public void Finish()
+    public void Finish()        // not in use
     {
         // sessionDone.Play();
         _hrClient.Stop();
@@ -183,7 +185,10 @@ public class Tasks : MonoBehaviour
     {
         if (e.IsLastBlock)
         {
-            Invoke("Finish", PAUSE_BETWEEN_BLOCKS);
+            _gazeClient.ShowUI();
+            backgroundAudio.Stop();
+            playingLadyPlayer.gameObject.SetActive(false);
+            //Invoke("Finish", PAUSE_BETWEEN_BLOCKS);
         }
         else
         {

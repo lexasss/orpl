@@ -9,6 +9,7 @@ public class GazeClient : MonoBehaviour
     // to be set in inspector
 
     public bool simulate;
+    public bool useTobiiSDK = true;
 
     public GameObject gazeControls;
     public Button options;
@@ -19,6 +20,8 @@ public class GazeClient : MonoBehaviour
     public Button tobiiToggleTracking;
     public Dropdown tobiiEye;
     public Text debug;
+    public GameObject etudControls;
+    public GameObject tobiiControls;
 
     // public members
 
@@ -33,7 +36,6 @@ public class GazeClient : MonoBehaviour
 
     // internal members
 
-    bool _useTobii = true;
     bool _simulated { get { return simulate/* || Environment.UserName == "olequ"*/; } }
 
     TobiiClient _tobii = null;
@@ -54,6 +56,9 @@ public class GazeClient : MonoBehaviour
     {
         gazeControls.SetActive(true);
 
+        etudControls.SetActive(!useTobiiSDK);
+        tobiiControls.SetActive(useTobiiSDK);
+
         _log = FindObjectOfType<Log>();
 
         _smoother = new Smoother<RawPoint>();
@@ -71,7 +76,7 @@ public class GazeClient : MonoBehaviour
             return;
         }
 
-        if (_useTobii)
+        if (useTobiiSDK)
         {
             _tobii = GetComponent<TobiiClient>();
             _tobii.Error += onTobiiError;
@@ -139,7 +144,7 @@ public class GazeClient : MonoBehaviour
         {
             _ws.Send(GazeIO.Request.toggleTracking);
         }
-        if (_tobii != null && isTracking && _hasInitiatedTracking)
+        if (_tobii != null)
         {
             _tobii.Close();
             _tobii = null;
@@ -150,40 +155,40 @@ public class GazeClient : MonoBehaviour
 
     public void ShowOptions()
     {
-        if (!_simulated)
+        if (!_simulated && !useTobiiSDK)
             _ws.Send(GazeIO.Request.showOptions);
     }
 
     public void Calibrate()
     {
-        if (!_simulated)
+        if (!_simulated && !useTobiiSDK)
             _ws.Send(GazeIO.Request.calibrate);
     }
 
     public void ToggleTracking()
     {
-        if (!isTracking)
+        if (_simulated)
         {
-            _hasInitiatedTracking = true;
+            _simulator.ToggleTracking();
         }
-
-        if (_simulated)
-            _simulator.ToggleTracking();
-        else
-            _ws.Send(GazeIO.Request.toggleTracking);
-    }
-
-    public void ToggleTobiiTracking()
-    {
-        if (_simulated)
-            _simulator.ToggleTracking();
-        else
+        else if (_tobii != null)
+        {
             _tobii.ToggleTracking();
+        }
+        else if (_ws != null)
+        {
+            if (!isTracking)
+            {
+                _hasInitiatedTracking = true;
+            }
+            _ws.Send(GazeIO.Request.toggleTracking);
+        }
     }
 
     public void TobiiSetEye()
     {
-        _tobii.eye = (TobiiClient.Eye)tobiiEye.value;
+        if (_tobii != null)
+            _tobii.eye = (TobiiClient.Eye)tobiiEye.value;
     }
 
     public void HideUI()
@@ -306,13 +311,13 @@ public class GazeClient : MonoBehaviour
     // Tobii
     private void onTobiiError(object sender, string error)
     {
-        tobiiModel.text = error;
+        deviceName.text = error;
         print($"TOBII:> ERROR: {error}");
     }
 
     private void onTobiiReady(object sender, string model)
     {
-        tobiiModel.text = model;
+        deviceName.text = model;
         tobiiToggleTracking.interactable = true;
 
         if (!_trackingInitialized)
@@ -340,7 +345,7 @@ public class GazeClient : MonoBehaviour
     // Simulator
     void onSimulatorDevice(object aHandler, GazeSimulator.DeviceArgs aArgs)
     {
-        if (_useTobii)
+        if (useTobiiSDK)
         {
             onTobiiReady(null, aArgs.device.name);
         }
@@ -352,7 +357,7 @@ public class GazeClient : MonoBehaviour
 
     void onSimulatorState(object aHandler, GazeSimulator.StateArgs aArgs)
     {
-        if (_useTobii)
+        if (useTobiiSDK)
         {
             onTobiiToggled(null, aArgs.state.isTracking);
         }

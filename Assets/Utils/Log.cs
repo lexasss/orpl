@@ -75,6 +75,14 @@ public class Log : MonoBehaviour
         PushEvent("Restart");
     }
 
+    public void ClearEvents()
+    {
+        lock (_lastEvents)
+        {
+            _lastEvents.Clear();
+        }
+    }
+
     public void Close()
     {
         _gazeClient.Sample -= onGazeSample;
