@@ -25,7 +25,7 @@ public class NetStation : MonoBehaviour
         FAILED_TO_CONNECT,
         FAILED_TO_CHECK_ECI_VERSION,
         UNSUPPORTED_ECI_VERIONS,
-        SYNCH_ING,
+        SYNC_ING,
         READY,
     }
 
@@ -66,7 +66,7 @@ public class NetStation : MonoBehaviour
 
     public void Connect()
     {
-        if (_tcp != null && _tcp.Connected)
+        if (_tcp != null)
         {
             return;
         }
@@ -80,6 +80,7 @@ public class NetStation : MonoBehaviour
         }
         catch (Exception ex)
         {
+            _tcp = null;
             Debug.LogError($"NS: {ex.Message}");
             Message(this, new StateChangedEventArgs(State.FAILED_TO_CONNECT, "failed to connect"));
         }
@@ -122,6 +123,8 @@ public class NetStation : MonoBehaviour
             Wait(.5f);
 
             _tcp.Close();
+            _tcp = null;
+
             Debug.Log("NS: Disconnect");
             Message(this, new StateChangedEventArgs(State.NOT_CONNECTED, "not connected"));
         }
@@ -221,7 +224,7 @@ public class NetStation : MonoBehaviour
             return;
         }
 
-        Message(this, new StateChangedEventArgs(State.SYNCH_ING, "sync'ing"));
+        Message(this, new StateChangedEventArgs(State.SYNC_ING, "sync'ing"));
 
         _syncEpoch = Time.time;
 
@@ -305,12 +308,16 @@ public class NetStation : MonoBehaviour
         }
         catch (Exception ex)
         {
+            if (_tcp != null)
+            {
+                _tcp.Close();
+                _tcp = null;
+            }
+
             Debug.LogError($"NS CON: {ex.Message}");
             ThreadDispatcher.RunOnMainThread(() => {
                 Message(this, new StateChangedEventArgs(State.FAILED_TO_CONNECT, $"failed to connect: {ex.Message}"));
             });
-
-            _tcp.Close();
         }
     }
 }
