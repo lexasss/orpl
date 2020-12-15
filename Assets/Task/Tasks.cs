@@ -107,6 +107,11 @@ public class Tasks : MonoBehaviour
 
     public void StartTasks()
     {
+        if (!LoadTasksFromFile())
+        {
+            return;
+        }
+
         _gazeClient.HideUI();
         playingLadyPlayer.gameObject.SetActive(true);
 
@@ -125,8 +130,13 @@ public class Tasks : MonoBehaviour
         Debug.Log($"session ID = {participantIDDropdown.options[participantIDDropdown.value]}");
     }
 
-    public void Finish()        // not in use
+    public void Finish()
     {
+        if (_gazeClient.isTracking)
+        {
+            _gazeClient.ToggleTracking();
+        }
+
         // sessionDone.Play();
         _hrClient.Stop();
         _log.Close();
@@ -155,7 +165,7 @@ public class Tasks : MonoBehaviour
         participantIDDropdown.AddOptions(orderFiles);
     }
 
-    void onGazeClientStart(object sender, EventArgs e)
+    bool LoadTasksFromFile()
     {
         bool allLoaded = true;
 
@@ -169,11 +179,16 @@ public class Tasks : MonoBehaviour
             infoDisplay.text = "Error in loading the task order file(s)";
             _log.Error(infoDisplay.text);
         }
-        else
-        {
-            baselineButton.interactable = true;
-            tasksButton.interactable = true;
-        }
+
+        return allLoaded;
+    }
+
+    void onGazeClientStart(object sender, EventArgs e)
+    {
+        // LoadTasksFromFile();
+
+        baselineButton.interactable = true;
+        tasksButton.interactable = true;
     }
 
     void onPlayingLadyBlockFinished(object sender, BlockFinishedEventArgs e)
