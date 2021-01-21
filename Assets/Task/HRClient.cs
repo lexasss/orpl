@@ -46,9 +46,19 @@ public class HRClient : MonoBehaviour
         SendEvent("BL-s");
     }
 
+    public void StartSocialVideo(char aType)
+    {
+        SendEvent($"SV{aType}s");
+    }
+
     public void StopBaseline()
     {
         SendEvent("BL-e");
+    }
+
+    public void StopSocialVideo(char aType)
+    {
+        SendEvent($"SV{aType}e");
     }
 
     public void StartAvatarTask(char aID, char aType)

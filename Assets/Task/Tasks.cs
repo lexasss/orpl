@@ -22,6 +22,7 @@ public class Tasks : MonoBehaviour
     public Dropdown participantIDDropdown;
     public AudioSource backgroundAudio;
     public VideoPlayer baselinePlayer;
+    public VideoPlayer socialVideoPlayer;
     public Button baselineButton;
     public Button tasksButton;
     public VideoPlayer playingLadyPlayer;
@@ -60,6 +61,7 @@ public class Tasks : MonoBehaviour
         _gazeClient.Sample += onGazeClientSample;
 
         baselinePlayer.loopPointReached += onBaselineStopped;
+        socialVideoPlayer.loopPointReached += onSocialVideoStopped;
 
         FillParticipantIDs();
     }
@@ -72,6 +74,11 @@ public class Tasks : MonoBehaviour
             {
                 baselinePlayer.Stop();
                 onBaselineStopped(null);
+            }
+            else if (socialVideoPlayer.isPlaying)
+            {
+                socialVideoPlayer.Stop();
+                onSocialVideoStopped(null);
             }
         }
     }
@@ -124,6 +131,19 @@ public class Tasks : MonoBehaviour
 
         _hrClient.StartTasks();
     }
+
+    public void StartSocialVideo(VideoClip videoClip)
+    {
+        _gazeClient.HideUI();
+
+        socialVideoPlayer.clip = videoClip;
+        socialVideoPlayer.gameObject.SetActive(true);
+        socialVideoPlayer.Play();
+
+        var name = videoClip.name;
+        _hrClient.StartSocialVideo(name[name.Length - 1]);
+    }
+
 
     public void onParticipantIDChanged(Dropdown aDropdown)
     {
@@ -187,8 +207,11 @@ public class Tasks : MonoBehaviour
     {
         // LoadTasksFromFile();
 
-        baselineButton.interactable = true;
-        tasksButton.interactable = true;
+        var buttons = FindObjectsOfType(typeof(Button)).Where(btn => (btn as Button).tag == "only-gaze-active");
+        foreach (var btn in buttons)
+        {
+            (btn as Button).interactable = true;
+        }
     }
 
     void onPlayingLadyBlockFinished(object sender, BlockFinishedEventArgs e)
@@ -216,5 +239,15 @@ public class Tasks : MonoBehaviour
         _gazeClient.ShowUI();
         _hrClient.StopBaseline();
         baselinePlayer.gameObject.SetActive(false);
+    }
+
+    void onSocialVideoStopped(VideoPlayer player)
+    {
+        _gazeClient.ShowUI();
+
+        var name = socialVideoPlayer.clip.name;
+        _hrClient.StopSocialVideo(name[name.Length - 1]);
+
+        socialVideoPlayer.gameObject.SetActive(false);
     }
 }
