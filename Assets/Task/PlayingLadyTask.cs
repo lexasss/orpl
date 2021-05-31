@@ -1,28 +1,34 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class PlayingLadyTask : MonoBehaviour
 {
     // to set in inspector
 
     public GameObject background;
+    public bool showVideoBetweenTrials = false;
+    public VideoPlayer restingVideoPlayer;
     public GameObject headArea;
     public AudioSource[] sounds;
     public Text debug;
+    public float maxGazeWaitingTime = 5f;
 
     // public members
 
     public event EventHandler<BlockFinishedEventArgs> BlockFinished = delegate { };
+    public event EventHandler<bool> Cancelled = delegate { };   // bool: has more trials
+
+    public bool IsRunning { get { return _isRunning; } }
 
     // definitions
 
     const string TRIALS_FILENAME = "playinglady.txt";
-    const int BLOCK_SIZE = 3;
+    const int BLOCK_SIZE = 2;
     const int VARIABLE_COUNT = 5;
 
     const float DWELL_TIME_SECOND_PART = 0.3f;
-    const float MAX_WAITING_GAZING_FACE = 5f;
     const float INTER_TRIAL_MIN_DURATION = 1f;
 
     enum TaskState
@@ -74,15 +80,19 @@ public class PlayingLadyTask : MonoBehaviour
             return;
         }
 
-        bool spacePressed = Input.GetKeyDown(KeyCode.Space);
-        if (spacePressed)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             if (!_isRunning)
             {
                 _isRunning = true;
                 _taskState = TaskState.NotStarted;
                 _trial = _trials.StartBlock();
-                background.SetActive(false);
+            }
+
+            background.SetActive(false);
+            if (showVideoBetweenTrials)
+            {
+                restingVideoPlayer.Stop();
             }
 
             if (_taskState == TaskState.NotStarted)
@@ -91,10 +101,16 @@ public class PlayingLadyTask : MonoBehaviour
             }
         }
 
-        bool enterPressed = Input.GetKeyDown(KeyCode.Return);
-        if (enterPressed && _taskState != TaskState.NotStarted && _taskState != TaskState.Finished)
+        if (_taskState != TaskState.NotStarted && _taskState != TaskState.Finished)
         {
-            RevertTrial();
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                RevertTrial();
+            }
+            else if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                CancelTrial();
+            }
         }
     }
 
@@ -108,7 +124,6 @@ public class PlayingLadyTask : MonoBehaviour
 
     public void NextBlock()
     {
-        background.SetActive(true);
         _isEnabled = true;
 
         _log.StartBlock("PlayingLady");
@@ -152,7 +167,11 @@ public class PlayingLadyTask : MonoBehaviour
         else
         {
             _isRunning = false;
-            // background.SetActive(false);
+            background.SetActive(false);
+            if (showVideoBetweenTrials)
+            {
+                restingVideoPlayer.Stop();
+            }
 
             blockDone.Play();
 
@@ -189,7 +208,7 @@ public class PlayingLadyTask : MonoBehaviour
 
             _focusDetector.SetTrackingObject(headArea);
 
-            Invoke("NextState", MAX_WAITING_GAZING_FACE);
+            Invoke("NextState", maxGazeWaitingTime);
         }
         else if (_taskState == TaskState.Second)
         {
@@ -218,7 +237,17 @@ public class PlayingLadyTask : MonoBehaviour
             _player.Stop();
             _log.TrialFinished(_trials.CurrentIndex);
 
-            // background.SetActive(true);
+            if (_trials.HasMoreBlockTrials)
+            {
+                if (showVideoBetweenTrials)
+                {
+                    restingVideoPlayer.Play();
+                }
+                else
+                {
+                    background.SetActive(true);
+                }
+            }
 
             Invoke("ResetState", INTER_TRIAL_MIN_DURATION);
         }
@@ -234,11 +263,34 @@ public class PlayingLadyTask : MonoBehaviour
 
         _focusDetector.SetTrackingObject(null);
         _player.Stop();
-        // background.SetActive(true);
-
+        
         _log.Restart();
 
         SetState(TaskState.NotStarted);
+
+        if (showVideoBetweenTrials)
+        {
+            restingVideoPlayer.Play();
+        }
+        else
+        {
+            background.SetActive(true);
+        }
+    }
+
+    void CancelTrial()
+    {
+        CancelInvoke();
+
+        _focusDetector.SetTrackingObject(null);
+        _player.Stop();
+
+        _log.Cancelled();
+
+        SetState(TaskState.NotStarted);
+        ResetState();
+
+        Cancelled(this, _trial != null);
     }
 
     void onClipStarted(object sender, EventArgs e)
