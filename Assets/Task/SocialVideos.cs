@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
@@ -14,34 +14,60 @@ public class SocialVideos : MonoBehaviour
     // private
 
     int _index = 0;
-    VideoClip[] _order;
+    List<VideoClip> _videos = new List<VideoClip>();
 
-    // overrides
-
-    void Start()
-    {
-        
-    }
+    const string SOCIAL_FILENAME = "social.txt";
 
     // public methods
 
+    public bool Load(string aFileNamePrefix = "")
+    {
+        var lines = Files.ReadLines(aFileNamePrefix + SOCIAL_FILENAME);
+        if (lines == null)
+        {
+            return false;
+        }
+
+        foreach (var line in lines)
+        {
+            var name = line.Trim();
+            if (string.IsNullOrEmpty(name))
+            {
+                continue;
+            }
+
+            try
+            { 
+                var socialVideo = clips.First(clip => clip.name.ToLower() == name);
+                _videos.Add(socialVideo);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
     public void Reset()
     {
         _index = 0;
-
+        /*
         var videos = new List<VideoClip>();
         videos.AddRange(clips);
 
-        _order = videos.ToArray();
+        _videos = videos.ToArray();
 
         System.Random rnd = new System.Random((int)DateTime.Now.Ticks);
-        rnd.Shuffle(_order);
+        rnd.Shuffle(_videos);
+        */
     }
 
     public VideoClip Next()
     {
-        var result = _order[_index];
-        if (++_index == _order.Length)
+        var result = _videos[_index];
+        if (++_index == _videos.Count)
         {
             _index = 0;
         }

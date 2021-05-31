@@ -6,7 +6,6 @@ public class OrientationTask : MonoBehaviour
 {
     // to set in inspector
 
-    public GameObject background;
     public bool showVideoBetweenTrials = false;
     public VideoPlayer restingVideoPlayer;
     public GameObject attentionGrabber;
@@ -17,7 +16,7 @@ public class OrientationTask : MonoBehaviour
     // public members
 
     public event EventHandler<BlockFinishedEventArgs> BlockFinished = delegate { };
-    public event EventHandler<bool> Cancelled = delegate { };   // bool: has more trials
+    public event EventHandler<bool> Cancelled = delegate { };   // bool: requests to display interruption media
 
     public bool IsRunning { get { return _isRunning; } }
 
@@ -47,6 +46,7 @@ public class OrientationTask : MonoBehaviour
     FocusDetector _focusDetector;
     HRClient _hrClient;
     Log _log;
+    RestingImages _restingImages;
 
     Trials<OrientationTrial> _trials;
     OrientationTrial _trial = null;
@@ -62,6 +62,7 @@ public class OrientationTask : MonoBehaviour
     {
         _hrClient = GetComponent<HRClient>();
         _log = GetComponent<Log>();
+        _restingImages = GetComponent<RestingImages>();
 
         _focusDetector = FindObjectOfType<FocusDetector>();
         _focusDetector.Focused += onAttentionGrabberFocused;
@@ -85,11 +86,7 @@ public class OrientationTask : MonoBehaviour
                 _trial = _trials.StartBlock();
             }
 
-            background.SetActive(false);
-            if (showVideoBetweenTrials)
-            {
-                restingVideoPlayer.Stop();
-            }
+            HideRestingMedia();
 
             if (_taskState == TaskState.NotStarted || _taskState == TaskState.AttentionGrabber)
             {
@@ -159,11 +156,7 @@ public class OrientationTask : MonoBehaviour
         else
         {
             _isRunning = false;
-            background.SetActive(false);
-            if (showVideoBetweenTrials)
-            {
-                restingVideoPlayer.Stop();
-            }
+            HideRestingMedia();
 
             blockDone.Play();
 
@@ -228,18 +221,9 @@ public class OrientationTask : MonoBehaviour
         {
             _image.Finish();
             _log.TrialFinished(_trials.CurrentIndex);
+            _hrClient.TrialFinished();
 
-            if (_trials.HasMoreBlockTrials)
-            {
-                if (showVideoBetweenTrials)
-                {
-                    restingVideoPlayer.Play();
-                }
-                else
-                {
-                    background.SetActive(true);
-                }
-            }
+            DisplayRestingMedia();
 
             Invoke("ResetState", INTER_TRIAL_MIN_DURATION);
         }
@@ -249,18 +233,50 @@ public class OrientationTask : MonoBehaviour
         }
     }
 
-    void CancelTrial()
+    void DisplayRestingMedia()
+    {
+        if (_trials.HasMoreBlockTrials)
+        {
+            if (showVideoBetweenTrials)
+            {
+                restingVideoPlayer.Play();
+            }
+            else
+            {
+                _restingImages.Show();
+            }
+        }
+    }
+
+    void HideRestingMedia()
+    {
+        if (showVideoBetweenTrials)
+        {
+            restingVideoPlayer.Stop();
+        }
+        else
+        {
+            _restingImages.Hide();
+        }
+    }
+
+    void CancelTrial(bool showInterruptionMedia = true)
     {
         CancelInvoke();
 
         _image.Finish();
 
         _log.Cancelled();
+        _hrClient.TrialCancelled();
 
         SetState(TaskState.NotStarted);
         ResetState();
 
-        Cancelled(this, _trial != null);
+        Cancelled(this, showInterruptionMedia);
+        if (!showInterruptionMedia)
+        {
+            DisplayRestingMedia();
+        }
     }
 
     void onAttentionGrabberFocused(object sender, EventArgs args)

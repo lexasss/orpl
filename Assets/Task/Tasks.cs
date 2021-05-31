@@ -211,7 +211,7 @@ public class Tasks : MonoBehaviour
 
     void FillParticipantIDs()
     {
-        var orderFiles = System.IO.Directory.EnumerateFiles(Trials<PlayingLadyTrial>.FOLDER)
+        var orderFiles = System.IO.Directory.EnumerateFiles(Files.FOLDER)
             .Where(file => file.Contains("orientation"))
             //.Select((file, i) => (i + 1).ToString())
             .Select(file => file.Split('/', '\\').Last())
@@ -232,6 +232,7 @@ public class Tasks : MonoBehaviour
 
         allLoaded = _playingLady.Load($"{sessionID}_order_") && allLoaded;
         allLoaded = _orientation.Load($"{sessionID}_order_") && allLoaded;
+        allLoaded = _socialVideos.Load($"{sessionID}_order_") && allLoaded;
 
         if (!allLoaded)
         {
@@ -279,9 +280,12 @@ public class Tasks : MonoBehaviour
         Invoke("OrientationNextBlock", PAUSE_BETWEEN_BLOCKS);
     }
 
-    void onPlayingLadyTrialCancelled(object sender, bool hasMoreBlocks)
+    void onPlayingLadyTrialCancelled(object sender, bool showInterruptionMedia)
     {
-        Invoke("StartInterruption", 0.5f);
+        if (showInterruptionMedia)
+        {
+            Invoke("StartInterruption", 0.5f);
+        }
     }
 
     void onOrientationBlockFinished(object sender, BlockFinishedEventArgs e)
@@ -300,9 +304,12 @@ public class Tasks : MonoBehaviour
         }
     }
 
-    void onOrientationTrialCancelled(object sender, bool hasMoreBlocks)
+    void onOrientationTrialCancelled(object sender, bool showInterruptionMedia)
     {
-        Invoke("StartInterruption", 0.5f);
+        if (showInterruptionMedia)
+        {
+            Invoke("StartInterruption", 0.5f);
+        }
     }
 
     void onSocialVideoStopped(VideoPlayer player)

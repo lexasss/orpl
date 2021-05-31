@@ -36,6 +36,12 @@ public class HRClient : MonoBehaviour
         _netStation.Begin();
     }
 
+    public void Stop()
+    {
+        _netStation.End();
+        _netStation.Disconnect();
+    }
+
     public void StartTasks()
     {
         SendEvent("OrPL");
@@ -74,12 +80,6 @@ public class HRClient : MonoBehaviour
     public void AvatarChangeInteraction(char aID, char aType)
     {
         SendEvent($"L{aID}-{aType}");
-    }
-
-    public void Stop()
-    {
-        _netStation.End();
-        _netStation.Disconnect();
     }
 
     public void AttentionGrabber()
@@ -130,6 +130,21 @@ public class HRClient : MonoBehaviour
     public void FixationOnFace()
     {
         SendEvent("FAOI");
+    }
+
+    public void TrialFinished()
+    {
+        SendEvent("FNSH");
+    }
+
+    public void TrialCancelled()
+    {
+        SendEvent("CNCL");
+    }
+
+    public void TrialRestarted()
+    {
+        SendEvent("RSTR");
     }
 
     // internal methods

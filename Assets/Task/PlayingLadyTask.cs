@@ -7,7 +7,6 @@ public class PlayingLadyTask : MonoBehaviour
 {
     // to set in inspector
 
-    public GameObject background;
     public bool showVideoBetweenTrials = false;
     public VideoPlayer restingVideoPlayer;
     public GameObject headArea;
@@ -18,7 +17,7 @@ public class PlayingLadyTask : MonoBehaviour
     // public members
 
     public event EventHandler<BlockFinishedEventArgs> BlockFinished = delegate { };
-    public event EventHandler<bool> Cancelled = delegate { };   // bool: has more trials
+    public event EventHandler<bool> Cancelled = delegate { };   // bool: requests to display interruption media
 
     public bool IsRunning { get { return _isRunning; } }
 
@@ -48,6 +47,7 @@ public class PlayingLadyTask : MonoBehaviour
     FocusDetector _focusDetector;
     HRClient _hrClient;
     Log _log;
+    RestingImages _restingImages;
 
     Trials<PlayingLadyTrial> _trials;
     PlayingLadyTrial _trial = null;
@@ -63,6 +63,7 @@ public class PlayingLadyTask : MonoBehaviour
     {
         _hrClient = GetComponent<HRClient>();
         _log = GetComponent<Log>();
+        _restingImages = GetComponent<RestingImages>();
 
         _focusDetector = FindObjectOfType<FocusDetector>();
         // _focusDetector.SetDebugOutput(debug);
@@ -89,11 +90,7 @@ public class PlayingLadyTask : MonoBehaviour
                 _trial = _trials.StartBlock();
             }
 
-            background.SetActive(false);
-            if (showVideoBetweenTrials)
-            {
-                restingVideoPlayer.Stop();
-            }
+            HideRestingMedia();
 
             if (_taskState == TaskState.NotStarted)
             {
@@ -110,6 +107,10 @@ public class PlayingLadyTask : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.Escape))
             {
                 CancelTrial();
+            }
+            else if (Input.GetKeyDown(KeyCode.I))
+            {
+                CancelTrial(false);
             }
         }
     }
@@ -167,11 +168,7 @@ public class PlayingLadyTask : MonoBehaviour
         else
         {
             _isRunning = false;
-            background.SetActive(false);
-            if (showVideoBetweenTrials)
-            {
-                restingVideoPlayer.Stop();
-            }
+            HideRestingMedia();
 
             blockDone.Play();
 
@@ -236,24 +233,42 @@ public class PlayingLadyTask : MonoBehaviour
             _focusDetector.SetTrackingObject(null);
             _player.Stop();
             _log.TrialFinished(_trials.CurrentIndex);
+            _hrClient.TrialFinished();
 
-            if (_trials.HasMoreBlockTrials)
-            {
-                if (showVideoBetweenTrials)
-                {
-                    restingVideoPlayer.Play();
-                }
-                else
-                {
-                    background.SetActive(true);
-                }
-            }
+            DisplayRestingMedia();
 
             Invoke("ResetState", INTER_TRIAL_MIN_DURATION);
         }
         else
         {
             throw new IndexOutOfRangeException($"SetState: task is in unsupported state: {_taskState}");
+        }
+    }
+
+    void DisplayRestingMedia()
+    {
+        if (_trials.HasMoreBlockTrials)
+        {
+            if (showVideoBetweenTrials)
+            {
+                restingVideoPlayer.Play();
+            }
+            else
+            {
+                _restingImages.Show();
+            }
+        }
+    }
+
+    void HideRestingMedia()
+    {
+        if (showVideoBetweenTrials)
+        {
+            restingVideoPlayer.Stop();
+        }
+        else
+        {
+            _restingImages.Hide();
         }
     }
 
@@ -265,20 +280,14 @@ public class PlayingLadyTask : MonoBehaviour
         _player.Stop();
         
         _log.Restart();
+        _hrClient.TrialRestarted();
 
+        DisplayRestingMedia();
+        
         SetState(TaskState.NotStarted);
-
-        if (showVideoBetweenTrials)
-        {
-            restingVideoPlayer.Play();
-        }
-        else
-        {
-            background.SetActive(true);
-        }
     }
 
-    void CancelTrial()
+    void CancelTrial(bool showInterruptionMedia = true)
     {
         CancelInvoke();
 
@@ -286,11 +295,17 @@ public class PlayingLadyTask : MonoBehaviour
         _player.Stop();
 
         _log.Cancelled();
+        _hrClient.TrialCancelled();
+
+        if (!showInterruptionMedia)
+        {
+            DisplayRestingMedia();
+        }
 
         SetState(TaskState.NotStarted);
         ResetState();
 
-        Cancelled(this, _trial != null);
+        Cancelled(this, showInterruptionMedia);
     }
 
     void onClipStarted(object sender, EventArgs e)

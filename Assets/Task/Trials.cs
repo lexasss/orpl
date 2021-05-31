@@ -58,7 +58,7 @@ public class PlayingLadyTrial : Trial
     static readonly string[] CAR_DIRECTIONS = new string[] { "left", "right" };
     static readonly int[] SLIDES = new int[] { 1, 2 };
     static readonly string[] CAR_COLORS = new string[] { "red", "blue" };
-    static readonly int[] CAR_RUNS = new int[] { 2, 3 };
+    static readonly int[] CAR_RUNS = new int[] { 1, 2, 3 };
 
     public string Gaze { get; private set; }
     public string Direction { get; private set; }
@@ -110,11 +110,41 @@ public class PlayingLadyTrial : Trial
 }
 
 
+public static class Files
+{
+    public static readonly string FOLDER = "order";
+    public static readonly char DELIMETER = '_';
+
+    public static string[] ReadLines(string aFileName, int aBlockSize = 1)
+    {
+        var filename = $"{FOLDER}\\{aFileName}";
+
+        string[] lines;
+        try
+        {
+            using (StreamReader reader = new StreamReader(filename))
+            {
+                lines = reader.ReadToEnd().Split('\n').Select(line => line.Trim().ToLower()).Where(line => line.Length > 0).ToArray();
+            }
+
+            if (lines.Length % aBlockSize != 0)
+            {
+                throw new Exception($"The last block is not complete: each block must consist of {aBlockSize} lines");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to read '{aFileName}' file: {ex.Message}");
+            return null;
+        }
+
+        return lines;
+    }
+
+}
+
 public class Trials<T> where T : Trial, new()
 {
-    // static
-
-    public static readonly string FOLDER = "order";
 
     // public methods
 
@@ -125,10 +155,6 @@ public class Trials<T> where T : Trial, new()
     public int CurrentIndex { get { return _index; } }
 
     public bool IsValid { get; private set; } = false;
-
-    // definitions
-
-    const char DELIMETER = '_';
 
     // internal members
 
@@ -150,24 +176,9 @@ public class Trials<T> where T : Trial, new()
 
         _log = GameObject.FindObjectOfType<Log>();
 
-        var filename = $"{FOLDER}\\{aFileName}";
-
-        string[] lines;
-        try
+        string[] lines = Files.ReadLines(aFileName, aBlockSize);
+        if (lines == null)
         {
-            using (StreamReader reader = new StreamReader(filename))
-            {
-                lines = reader.ReadToEnd().Split('\n').Select(line => line.Trim().ToLower()).Where(line => line.Length > 0).ToArray();
-            }
-
-            if (lines.Length % _blockSize != 0)
-            {
-                throw new Exception($"The last block is not complete: each block must consist of {_blockSize} lines");
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Failed to read '{aFileName}' file: {ex.Message}");
             return;
         }
 
@@ -178,12 +189,12 @@ public class Trials<T> where T : Trial, new()
                 continue;
             }
 
-            var variables = line.Split(DELIMETER);
+            var variables = line.Split(Files.DELIMETER);
             try
             {
                 if (variables.Length != _variableCount)
                 {
-                    throw new Exception($"the line must consist of {_variableCount} variable separated by '{DELIMETER}'");
+                    throw new Exception($"the line must consist of {_variableCount} variable separated by '{Files.DELIMETER}'");
                 }
                 else
                 {

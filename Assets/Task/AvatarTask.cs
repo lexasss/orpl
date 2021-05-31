@@ -36,7 +36,7 @@ public class AvatarTask : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Escape))
         {
-            if (_audioToFinish.isPlaying)
+            if (_audioToFinish?.isPlaying ?? false)
             {
                 _audioToFinish.Stop();
             }
