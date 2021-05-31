@@ -28,11 +28,6 @@ public class OrientationTrial : Trial
 
     public void Parse(string[] aVariables)
     {
-        if (aVariables == null || aVariables.Length != 3)
-        {
-            throw new ArgumentException("invalid size of set of variables");
-        }
-
         Set(aVariables[0], aVariables[1], aVariables[2]);
     }
 
@@ -80,11 +75,6 @@ public class PlayingLadyTrial : Trial
 
     public void Parse(string[] aVariables)
     {
-        if (aVariables == null || aVariables.Length != 5)
-        {
-            throw new ArgumentException("invalid size of set of variables");
-        }
-
         Set(aVariables[0], aVariables[1], int.Parse(aVariables[2]), aVariables[3], int.Parse(aVariables[4]));
     }
 
@@ -129,6 +119,7 @@ public class Trials<T> where T : Trial, new()
     // public methods
 
     public bool HasMoreTrials { get { return _index < (_trials.Count - 1); } }
+    public bool HasMoreBlockTrials { get { return _index < (_nextBlockStartIndex - 1); } }
     public bool HasMoreBlocks { get { return _index < (_trials.Count - _blockSize); } }
 
     public int CurrentIndex { get { return _index; } }

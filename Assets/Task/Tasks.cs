@@ -15,6 +15,12 @@ public class BlockFinishedEventArgs : EventArgs
 
 public class Tasks : MonoBehaviour
 {
+    public enum MediaType
+    {
+        Image,
+        Video
+    }
+
     // to set in inspector
 
     public Text infoDisplay;
@@ -26,6 +32,9 @@ public class Tasks : MonoBehaviour
     public Button baselineButton;
     public Button tasksButton;
     public VideoPlayer playingLadyPlayer;
+    public MediaType interruptionMedia;
+    public GameObject interruptionImage;
+    public VideoPlayer interruptionPlayer;
 
     // definitions
 
@@ -41,18 +50,25 @@ public class Tasks : MonoBehaviour
     GazePoint _gazePoint;
     GazeClient _gazeClient;
 
+    bool _socialVideoOnly;
+    SocialVideos _socialVideos;
+
     // overrides
 
     void Start()
     {
         _orientation = GetComponent<OrientationTask>();
         _orientation.BlockFinished += onOrientationBlockFinished;
+        _orientation.Cancelled += onOrientationTrialCancelled;
 
         _playingLady = GetComponent<PlayingLadyTask>();
         _playingLady.BlockFinished += onPlayingLadyBlockFinished;
+        _playingLady.Cancelled += onPlayingLadyTrialCancelled;
 
         _hrClient = GetComponent<HRClient>();
         _log = GetComponent<Log>();
+
+        _socialVideos = GetComponent<SocialVideos>();
 
         _gazePoint = FindObjectOfType<GazePoint>();
 
@@ -80,6 +96,25 @@ public class Tasks : MonoBehaviour
                 socialVideoPlayer.Stop();
                 onSocialVideoStopped(null);
             }
+            else if (interruptionImage.activeSelf)
+            {
+                interruptionImage.SetActive(false);
+            }
+            else if (interruptionPlayer.isPlaying)
+            {
+                interruptionPlayer.Stop();
+            }
+        }
+        if (Input.GetKey(KeyCode.Space))
+        {
+            if (interruptionImage.activeSelf)
+            {
+                interruptionImage.SetActive(false);
+            }
+            else if (interruptionPlayer.isPlaying)
+            {
+                interruptionPlayer.Stop();
+            }
         }
     }
 
@@ -90,17 +125,7 @@ public class Tasks : MonoBehaviour
 
     // public methods
 
-    public void PlayingLadyNextBlock()
-    {
-        _playingLady.NextBlock();
-        infoDisplay.text = "";
-    }
-
-    public void OrientationNextBlock()
-    {
-        _orientation.NextBlock();
-        infoDisplay.text = "";
-    }
+    // Response to UI events
 
     public void StartBaseline()
     {
@@ -129,25 +154,39 @@ public class Tasks : MonoBehaviour
         Invoke("PlayingLadyNextBlock", 0.5f);
         // Invoke("OrientationNextBlock", 0.5f);
 
+        _socialVideoOnly = false;
+        _socialVideos.Reset();
+
         _hrClient.StartTasks();
     }
 
     public void StartSocialVideo(VideoClip videoClip)
     {
         _gazeClient.HideUI();
+        _socialVideoOnly = true;
 
         socialVideoPlayer.clip = videoClip;
-        socialVideoPlayer.gameObject.SetActive(true);
-        socialVideoPlayer.Play();
 
-        var name = videoClip.name;
-        _hrClient.StartSocialVideo(name[name.Length - 1]);
+        PlaySocialVideo();
     }
-
 
     public void onParticipantIDChanged(Dropdown aDropdown)
     {
         Debug.Log($"session ID = {participantIDDropdown.options[participantIDDropdown.value]}");
+    }
+
+    // To be invoked
+
+    public void PlayingLadyNextBlock()
+    {
+        _playingLady.NextBlock();
+        infoDisplay.text = "";
+    }
+
+    public void OrientationNextBlock()
+    {
+        _orientation.NextBlock();
+        infoDisplay.text = "";
     }
 
     public void Finish()
@@ -203,6 +242,27 @@ public class Tasks : MonoBehaviour
         return allLoaded;
     }
 
+    void PlaySocialVideo()
+    {
+        socialVideoPlayer.gameObject.SetActive(true);
+        socialVideoPlayer.Play();
+
+        var name = socialVideoPlayer.clip.name;
+        _hrClient.StartSocialVideo(name[name.Length - 1]);
+    }
+
+    void StartInterruption()
+    {
+        if (interruptionMedia == MediaType.Image)
+        {
+            interruptionImage.SetActive(true);
+        }
+        else
+        {
+            interruptionPlayer.Play();
+        }
+    }
+
     void onGazeClientStart(object sender, EventArgs e)
     {
         // LoadTasksFromFile();
@@ -219,6 +279,11 @@ public class Tasks : MonoBehaviour
         Invoke("OrientationNextBlock", PAUSE_BETWEEN_BLOCKS);
     }
 
+    void onPlayingLadyTrialCancelled(object sender, bool hasMoreBlocks)
+    {
+        Invoke("StartInterruption", 0.5f);
+    }
+
     void onOrientationBlockFinished(object sender, BlockFinishedEventArgs e)
     {
         if (e.IsLastBlock)
@@ -227,6 +292,29 @@ public class Tasks : MonoBehaviour
             backgroundAudio.Stop();
             playingLadyPlayer.gameObject.SetActive(false);
             //Invoke("Finish", PAUSE_BETWEEN_BLOCKS);
+        }
+        else
+        {
+            socialVideoPlayer.clip = _socialVideos.Next();
+            Invoke("PlaySocialVideo", PAUSE_BETWEEN_BLOCKS);
+        }
+    }
+
+    void onOrientationTrialCancelled(object sender, bool hasMoreBlocks)
+    {
+        Invoke("StartInterruption", 0.5f);
+    }
+
+    void onSocialVideoStopped(VideoPlayer player)
+    {
+        var name = socialVideoPlayer.clip.name;
+        _hrClient.StopSocialVideo(name[name.Length - 1]);
+
+        socialVideoPlayer.gameObject.SetActive(false);
+
+        if (_socialVideoOnly)
+        {
+            _gazeClient.ShowUI();
         }
         else
         {
@@ -239,15 +327,5 @@ public class Tasks : MonoBehaviour
         _gazeClient.ShowUI();
         _hrClient.StopBaseline();
         baselinePlayer.gameObject.SetActive(false);
-    }
-
-    void onSocialVideoStopped(VideoPlayer player)
-    {
-        _gazeClient.ShowUI();
-
-        var name = socialVideoPlayer.clip.name;
-        _hrClient.StopSocialVideo(name[name.Length - 1]);
-
-        socialVideoPlayer.gameObject.SetActive(false);
     }
 }

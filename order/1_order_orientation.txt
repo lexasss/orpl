@@ -14,5 +14,3 @@ Anne_Right_Direct
 Karoliina_Left_Direct
 Jerita_Right_Averted
 Anne_Left_Averted
-Karoliina_Right_Averted
-Jerita_Left_Direct

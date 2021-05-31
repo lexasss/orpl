@@ -75,6 +75,11 @@ public class Log : MonoBehaviour
         PushEvent("Restart");
     }
 
+    public void Cancelled()
+    {
+        PushEvent("Cancelled");
+    }
+
     public void ClearEvents()
     {
         lock (_lastEvents)

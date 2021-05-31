@@ -1,27 +1,33 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class OrientationTask : MonoBehaviour
 {
     // to set in inspector
 
     public GameObject background;
+    public bool showVideoBetweenTrials = false;
+    public VideoPlayer restingVideoPlayer;
     public GameObject attentionGrabber;
     public AudioSource[] sounds;
+    public float gazeDownwardDuration = 2f;
+    public float gazeUpwardDuration = 3f;
 
     // public members
 
     public event EventHandler<BlockFinishedEventArgs> BlockFinished = delegate { };
+    public event EventHandler<bool> Cancelled = delegate { };   // bool: has more trials
+
+    public bool IsRunning { get { return _isRunning; } }
 
     // definitions
 
     const string TRIALS_FILENAME = "orientation.txt";
-    const int BLOCK_SIZE = 3;
+    const int BLOCK_SIZE = 4;
     const int VARIABLE_COUNT = 3;
 
     const float DWELL_TIME_ATTENTION_GRABBER = 1f;
-    const float GAZE_DOWNWARD_DURATION = 2f;
-    const float GAZE_UPWARD_DURATION = 3f;
     const float INTER_TRIAL_MIN_DURATION = 1f;
 
     enum TaskState
@@ -70,20 +76,32 @@ public class OrientationTask : MonoBehaviour
             return;
         }
 
-        bool spacePressed = Input.GetKeyDown(KeyCode.Space);
-        if (spacePressed)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             if (!_isRunning)
             {
                 _isRunning = true;
                 _taskState = TaskState.NotStarted;
                 _trial = _trials.StartBlock();
-                background.SetActive(false);
+            }
+
+            background.SetActive(false);
+            if (showVideoBetweenTrials)
+            {
+                restingVideoPlayer.Stop();
             }
 
             if (_taskState == TaskState.NotStarted || _taskState == TaskState.AttentionGrabber)
             {
                 NextState();
+            }
+        }
+
+        if (_taskState != TaskState.NotStarted && _taskState != TaskState.Finished)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                CancelTrial();
             }
         }
     }
@@ -98,7 +116,6 @@ public class OrientationTask : MonoBehaviour
 
     public void NextBlock()
     {
-        background.SetActive(true);
         _isEnabled = true;
 
         _log.StartBlock("Orientation");
@@ -142,7 +159,11 @@ public class OrientationTask : MonoBehaviour
         else
         {
             _isRunning = false;
-            // background.SetActive(false);
+            background.SetActive(false);
+            if (showVideoBetweenTrials)
+            {
+                restingVideoPlayer.Stop();
+            }
 
             blockDone.Play();
 
@@ -181,7 +202,7 @@ public class OrientationTask : MonoBehaviour
 
             _hrClient.OrientationGazeDownward(actor, head);
 
-            Invoke("NextState", GAZE_DOWNWARD_DURATION);
+            Invoke("NextState", gazeDownwardDuration);
         }
         else if (_taskState == TaskState.GazeUp)
         {
@@ -201,12 +222,24 @@ public class OrientationTask : MonoBehaviour
                 _hrClient.OrientationGazeAverted(actor, head);
             }
 
-            Invoke("NextState", GAZE_UPWARD_DURATION);
+            Invoke("NextState", gazeUpwardDuration);
         }
         else if (_taskState == TaskState.Finished)
         {
             _image.Finish();
             _log.TrialFinished(_trials.CurrentIndex);
+
+            if (_trials.HasMoreBlockTrials)
+            {
+                if (showVideoBetweenTrials)
+                {
+                    restingVideoPlayer.Play();
+                }
+                else
+                {
+                    background.SetActive(true);
+                }
+            }
 
             Invoke("ResetState", INTER_TRIAL_MIN_DURATION);
         }
@@ -214,6 +247,20 @@ public class OrientationTask : MonoBehaviour
         {
             throw new IndexOutOfRangeException($"SetState: task is in unsupported state: {_taskState}");
         }
+    }
+
+    void CancelTrial()
+    {
+        CancelInvoke();
+
+        _image.Finish();
+
+        _log.Cancelled();
+
+        SetState(TaskState.NotStarted);
+        ResetState();
+
+        Cancelled(this, _trial != null);
     }
 
     void onAttentionGrabberFocused(object sender, EventArgs args)
