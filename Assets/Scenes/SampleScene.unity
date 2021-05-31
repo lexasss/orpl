@@ -691,7 +691,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 128960753}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 7e816e27775ad4747a21027e9123d014, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 5233f59adcb7df94ab0f01bebccd5f68, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 519420031}
@@ -704,12 +704,14 @@ VideoPlayer:
   m_DataSource: 0
   m_PlaybackSpeed: 1
   m_AudioOutputMode: 2
-  m_TargetAudioSources: []
-  m_DirectAudioVolumes: []
+  m_TargetAudioSources:
+  - {fileID: 0}
+  m_DirectAudioVolumes:
+  - 1
   m_Url: 
-  m_EnabledAudioTracks: 
-  m_DirectAudioMutes: 
-  m_ControlledAudioTrackCount: 0
+  m_EnabledAudioTracks: 01
+  m_DirectAudioMutes: 00
+  m_ControlledAudioTrackCount: 1
   m_PlayOnAwake: 0
   m_SkipOnDrop: 1
   m_Looping: 1
@@ -3764,7 +3766,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 904061207}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 2d7d3253da89aa249a2987e5f5e9b576, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 7a08258665d5fdd45b987a97cdc6012c, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 519420031}
@@ -3777,12 +3779,14 @@ VideoPlayer:
   m_DataSource: 0
   m_PlaybackSpeed: 1
   m_AudioOutputMode: 2
-  m_TargetAudioSources: []
-  m_DirectAudioVolumes: []
+  m_TargetAudioSources:
+  - {fileID: 0}
+  m_DirectAudioVolumes:
+  - 1
   m_Url: 
-  m_EnabledAudioTracks: 
-  m_DirectAudioMutes: 
-  m_ControlledAudioTrackCount: 0
+  m_EnabledAudioTracks: 01
+  m_DirectAudioMutes: 00
+  m_ControlledAudioTrackCount: 1
   m_PlayOnAwake: 0
   m_SkipOnDrop: 1
   m_Looping: 1
@@ -6855,7 +6859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   background: {fileID: 1625042287}
-  showVideoBetweenTrials: 0
+  showVideoBetweenTrials: 1
   restingVideoPlayer: {fileID: 904061209}
   attentionGrabber: {fileID: 1320880912}
   sounds:
@@ -6911,7 +6915,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   background: {fileID: 760882672}
-  showVideoBetweenTrials: 0
+  showVideoBetweenTrials: 1
   restingVideoPlayer: {fileID: 904061209}
   headArea: {fileID: 1732465324}
   sounds:
@@ -6940,7 +6944,7 @@ MonoBehaviour:
   baselineButton: {fileID: 1670991210}
   tasksButton: {fileID: 378490517}
   playingLadyPlayer: {fileID: 593816}
-  interruptionMedia: 1
+  interruptionMedia: 0
   interruptionImage: {fileID: 1467929932}
   interruptionPlayer: {fileID: 128960755}
 --- !u!114 &1588601426
