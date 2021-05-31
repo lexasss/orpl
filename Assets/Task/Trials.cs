@@ -11,9 +11,9 @@ public interface Trial
 
 public class OrientationTrial : Trial
 {
-    static readonly string[] ACTORS = new string[] { "anne", "jerita", "karoliina" };
+    static readonly string[] ACTORS = new string[] { "anne", "jerita", "karoliina", "1clock", "2clock", "3clock" };
     static readonly string[] HEAD_DIRECTIONS = new string[] { "left", "right" };
-    static readonly string[] GAZE_DIRECTIONS = new string[] { "direct", "averted" };
+    static readonly string[] GAZE_DIRECTIONS = new string[] { "direct", "averted", "forward", "backward" };
 
     public string Actor { get; private set; }
     public string Head { get; private set; }

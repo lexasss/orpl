@@ -213,7 +213,7 @@ public class OrientationTask : MonoBehaviour
             _image.Show($"{actor}-{head}-up-{gaze[0]}");
             // _focusDetector.SetTrackingObject(_image.faceImage);
 
-            if (gaze == "direct")
+            if (gaze == "direct" || gaze == "forward")
             {
                 _hrClient.OrientationGazeDirect(actor, head);
             }
