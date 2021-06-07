@@ -11,7 +11,7 @@ public class FocusDetector : MonoBehaviour
 
     // definitions
 
-    const int GAZE_POINTS_TO_ACTIVATE_OBJECT = 6;
+    const int GAZE_POINTS_TO_ACTIVATE_OBJECT = 18;
 
     // internal members
 

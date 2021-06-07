@@ -104,11 +104,11 @@ public class PlayingLadyTask : MonoBehaviour
             {
                 RevertTrial();
             }
-            else if (Input.GetKeyDown(KeyCode.Escape))
+            else if (Input.GetKeyDown(KeyCode.I))
             {
                 CancelTrial();
             }
-            else if (Input.GetKeyDown(KeyCode.I))
+            else if (Input.GetKeyDown(KeyCode.Escape))
             {
                 CancelTrial(false);
             }

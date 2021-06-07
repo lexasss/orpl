@@ -26,7 +26,7 @@ public class OrientationTask : MonoBehaviour
     const int BLOCK_SIZE = 4;
     const int VARIABLE_COUNT = 3;
 
-    const float DWELL_TIME_ATTENTION_GRABBER = 1f;
+    const float DWELL_TIME_ATTENTION_GRABBER = 2f;
     const float INTER_TRIAL_MIN_DURATION = 1f;
 
     enum TaskState
