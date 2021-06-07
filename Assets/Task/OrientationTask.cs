@@ -79,17 +79,11 @@ public class OrientationTask : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (!_isRunning)
-            {
-                _isRunning = true;
-                _taskState = TaskState.NotStarted;
-                _trial = _trials.StartBlock();
-            }
-
-            HideRestingMedia();
+            _isRunning = true;
 
             if (_taskState == TaskState.NotStarted || _taskState == TaskState.AttentionGrabber)
             {
+                HideRestingMedia();
                 NextState();
             }
         }
@@ -116,6 +110,11 @@ public class OrientationTask : MonoBehaviour
         _isEnabled = true;
 
         _log.StartBlock("Orientation");
+
+        _taskState = TaskState.NotStarted;
+        _trial = _trials.StartBlock();
+
+        DisplayRestingMedia();
     }
 
     // internal methods

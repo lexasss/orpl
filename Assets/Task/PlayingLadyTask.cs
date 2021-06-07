@@ -83,17 +83,11 @@ public class PlayingLadyTask : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (!_isRunning)
-            {
-                _isRunning = true;
-                _taskState = TaskState.NotStarted;
-                _trial = _trials.StartBlock();
-            }
-
-            HideRestingMedia();
+            _isRunning = true;
 
             if (_taskState == TaskState.NotStarted)
             {
+                HideRestingMedia();
                 NextState();
             }
         }
@@ -128,6 +122,11 @@ public class PlayingLadyTask : MonoBehaviour
         _isEnabled = true;
 
         _log.StartBlock("PlayingLady");
+
+        _taskState = TaskState.NotStarted;
+        _trial = _trials.StartBlock();
+
+        DisplayRestingMedia();
     }
 
     // internal methods
