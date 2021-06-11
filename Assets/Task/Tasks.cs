@@ -245,6 +245,8 @@ public class Tasks : MonoBehaviour
 
     void PlaySocialVideo()
     {
+        backgroundAudio.mute = true;
+
         socialVideoPlayer.gameObject.SetActive(true);
         socialVideoPlayer.Play();
 
@@ -318,6 +320,8 @@ public class Tasks : MonoBehaviour
         _hrClient.StopSocialVideo(name[name.Length - 1]);
 
         socialVideoPlayer.gameObject.SetActive(false);
+
+        backgroundAudio.mute = false;
 
         if (_socialVideoOnly)
         {
