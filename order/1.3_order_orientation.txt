@@ -1,0 +1,9 @@
+Karoliina_Right_Direct
+Anne_Left_Averted
+Clock1_Left_Backward
+Clock3_Right_Forward
+
+Clock2_Right_Forward
+Clock1_Left_Backward
+Karoliina_Right_Averted
+Jerita_Left_Direct

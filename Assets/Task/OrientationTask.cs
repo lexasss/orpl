@@ -259,7 +259,7 @@ public class OrientationTask : MonoBehaviour
         }
     }
 
-    void CancelTrial(bool showInterruptionMedia = true)
+    void CancelTrial(bool showInterruptionMedia = false)
     {
         CancelInvoke();
 

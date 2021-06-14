@@ -1,0 +1,7 @@
+direct_left_1_red_2
+averted_left_1_red_1
+
+down_left_1_red_1
+direct_left_1_red_1
+
+
