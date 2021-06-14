@@ -50,8 +50,11 @@ public class Tasks : MonoBehaviour
     GazePoint _gazePoint;
     GazeClient _gazeClient;
 
+    bool _isLastBlock = false;
     bool _socialVideoOnly;
     SocialVideos _socialVideos;
+
+    ITask _currentTask = null;
 
     // overrides
 
@@ -99,10 +102,12 @@ public class Tasks : MonoBehaviour
             else if (interruptionImage.activeSelf)
             {
                 interruptionImage.SetActive(false);
+                _currentTask?.DisplayRestingMedia(true);
             }
             else if (interruptionPlayer.isPlaying)
             {
                 interruptionPlayer.Stop();
+                _currentTask?.DisplayRestingMedia(true);
             }
         }
         if (Input.GetKey(KeyCode.Space))
@@ -154,6 +159,7 @@ public class Tasks : MonoBehaviour
         Invoke("PlayingLadyNextBlock", 0.5f);
         // Invoke("OrientationNextBlock", 0.5f);
 
+        _isLastBlock = false;
         _socialVideoOnly = false;
         _socialVideos.Reset();
 
@@ -179,12 +185,14 @@ public class Tasks : MonoBehaviour
 
     public void PlayingLadyNextBlock()
     {
+        _currentTask = _playingLady;
         _playingLady.NextBlock();
         infoDisplay.text = "";
     }
 
     public void OrientationNextBlock()
     {
+        _currentTask = _orientation;
         _orientation.NextBlock();
         infoDisplay.text = "";
     }
@@ -279,6 +287,7 @@ public class Tasks : MonoBehaviour
 
     void onPlayingLadyBlockFinished(object sender, BlockFinishedEventArgs e)
     {
+        _currentTask = null;
         Invoke("OrientationNextBlock", PAUSE_BETWEEN_BLOCKS);
     }
 
@@ -292,6 +301,13 @@ public class Tasks : MonoBehaviour
 
     void onOrientationBlockFinished(object sender, BlockFinishedEventArgs e)
     {
+        _currentTask = null;
+        _isLastBlock = e.IsLastBlock;
+
+        socialVideoPlayer.clip = _socialVideos.Next();
+        Invoke("PlaySocialVideo", PAUSE_BETWEEN_BLOCKS);
+
+        /*
         if (e.IsLastBlock)
         {
             _gazeClient.ShowUI();
@@ -304,6 +320,7 @@ public class Tasks : MonoBehaviour
             socialVideoPlayer.clip = _socialVideos.Next();
             Invoke("PlaySocialVideo", PAUSE_BETWEEN_BLOCKS);
         }
+        */
     }
 
     void onOrientationTrialCancelled(object sender, bool showInterruptionMedia)
@@ -326,6 +343,12 @@ public class Tasks : MonoBehaviour
         if (_socialVideoOnly)
         {
             _gazeClient.ShowUI();
+        }
+        else if (_isLastBlock)
+        {
+            _gazeClient.ShowUI();
+            backgroundAudio.Stop();
+            playingLadyPlayer.gameObject.SetActive(false);
         }
         else
         {

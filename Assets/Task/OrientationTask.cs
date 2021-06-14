@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Video;
 
-public class OrientationTask : MonoBehaviour
+public class OrientationTask : MonoBehaviour, ITask
 {
     // to set in inspector
 
@@ -117,6 +117,21 @@ public class OrientationTask : MonoBehaviour
         DisplayRestingMedia();
     }
 
+    public void DisplayRestingMedia(bool force = false)
+    {
+        if (force || _trials.HasMoreBlockTrials)
+        {
+            if (showVideoBetweenTrials)
+            {
+                restingVideoPlayer.Play();
+            }
+            else
+            {
+                _restingImages.Show();
+            }
+        }
+    }
+
     // internal methods
 
     void NextState()
@@ -229,21 +244,6 @@ public class OrientationTask : MonoBehaviour
         else
         {
             throw new IndexOutOfRangeException($"SetState: task is in unsupported state: {_taskState}");
-        }
-    }
-
-    void DisplayRestingMedia()
-    {
-        if (_trials.HasMoreBlockTrials)
-        {
-            if (showVideoBetweenTrials)
-            {
-                restingVideoPlayer.Play();
-            }
-            else
-            {
-                _restingImages.Show();
-            }
         }
     }
 

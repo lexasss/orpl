@@ -16,9 +16,12 @@ public class RestingImages : MonoBehaviour
 
     public void Show()
     {
-        var index = Random.Range(0, images.Length);
-        _visibleImage = images[index];
-        _visibleImage.gameObject.SetActive(true);
+        if (_visibleImage == null)
+        {
+            var index = Random.Range(0, images.Length);
+            _visibleImage = images[index];
+            _visibleImage.gameObject.SetActive(true);
+        }
     }
 
     public void Hide()

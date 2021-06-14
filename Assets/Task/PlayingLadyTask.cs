@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-public class PlayingLadyTask : MonoBehaviour
+public class PlayingLadyTask : MonoBehaviour, ITask
 {
     // to set in inspector
 
@@ -100,11 +100,11 @@ public class PlayingLadyTask : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.I))
             {
-                CancelTrial();
+                CancelTrial(true);
             }
             else if (Input.GetKeyDown(KeyCode.Escape))
             {
-                CancelTrial(false);
+                CancelTrial();
             }
         }
     }
@@ -128,6 +128,22 @@ public class PlayingLadyTask : MonoBehaviour
 
         DisplayRestingMedia();
     }
+
+    public void DisplayRestingMedia(bool force = false)
+    {
+        if (force || _trials.HasMoreBlockTrials)
+        {
+            if (showVideoBetweenTrials)
+            {
+                restingVideoPlayer.Play();
+            }
+            else
+            {
+                _restingImages.Show();
+            }
+        }
+    }
+
 
     // internal methods
 
@@ -244,21 +260,6 @@ public class PlayingLadyTask : MonoBehaviour
         }
     }
 
-    void DisplayRestingMedia()
-    {
-        if (_trials.HasMoreBlockTrials)
-        {
-            if (showVideoBetweenTrials)
-            {
-                restingVideoPlayer.Play();
-            }
-            else
-            {
-                _restingImages.Show();
-            }
-        }
-    }
-
     void HideRestingMedia()
     {
         if (showVideoBetweenTrials)
@@ -286,7 +287,7 @@ public class PlayingLadyTask : MonoBehaviour
         SetState(TaskState.NotStarted);
     }
 
-    void CancelTrial(bool showInterruptionMedia = true)
+    void CancelTrial(bool showInterruptionMedia = false)
     {
         CancelInvoke();
 
