@@ -28,6 +28,8 @@ public class SocialVideos : MonoBehaviour
             return false;
         }
 
+        _videos.Clear();
+
         foreach (var line in lines)
         {
             var name = line.Trim();

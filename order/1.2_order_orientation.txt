@@ -1,9 +1,9 @@
-Clock1_Right_Backward
+1Clock_Right_Backward
 Jerita_Right_Averted
-Clock3_Left_Forward
+3Clock_Left_Forward
 Karoliina_Left_Direct
 
 Jerita_Right_Averted
-Clock2_Left_Forward
-Clock3_Right_Backward
+2Clock_Left_Forward
+3Clock_Right_Backward
 Anne_Left_Direct

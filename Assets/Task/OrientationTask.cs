@@ -268,14 +268,15 @@ public class OrientationTask : MonoBehaviour, ITask
         _log.Cancelled();
         _hrClient.TrialCancelled();
 
-        SetState(TaskState.NotStarted);
-        ResetState();
-
-        Cancelled(this, showInterruptionMedia);
         if (!showInterruptionMedia)
         {
             DisplayRestingMedia();
         }
+
+        SetState(TaskState.NotStarted);
+        ResetState();
+
+        Cancelled(this, showInterruptionMedia);
     }
 
     void onAttentionGrabberFocused(object sender, EventArgs args)
