@@ -360,7 +360,7 @@ GameObject:
   - component: {fileID: 16906940}
   - component: {fileID: 16906939}
   m_Layer: 5
-  m_Name: karoliina-right-up-d
+  m_Name: karoliina-right-up-s
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4762,7 +4762,7 @@ GameObject:
   - component: {fileID: 942788009}
   - component: {fileID: 942788008}
   m_Layer: 5
-  m_Name: anne-left-up-d
+  m_Name: anne-left-up-s
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5187,7 +5187,7 @@ GameObject:
   - component: {fileID: 1034112179}
   - component: {fileID: 1034112178}
   m_Layer: 5
-  m_Name: anne-right-up-d
+  m_Name: anne-right-up-s
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6242,7 +6242,7 @@ GameObject:
   - component: {fileID: 1285957796}
   - component: {fileID: 1285957795}
   m_Layer: 5
-  m_Name: jerita-right-up-d
+  m_Name: jerita-right-up-s
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6587,7 +6587,7 @@ GameObject:
   - component: {fileID: 1374437233}
   - component: {fileID: 1374437232}
   m_Layer: 5
-  m_Name: jerita-left-up-d
+  m_Name: jerita-left-up-s
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7943,7 +7943,7 @@ MonoBehaviour:
   sounds:
   - {fileID: 1836357420}
   - {fileID: 1094169148}
-  gazeDownwardDuration: 0.2
+  gazeDownwardDuration: 0.3
   gazeUpwardDuration: 2
 --- !u!4 &1588601422
 Transform:
@@ -10657,7 +10657,7 @@ GameObject:
   - component: {fileID: 2030246744}
   - component: {fileID: 2030246743}
   m_Layer: 5
-  m_Name: karoliina-left-up-d
+  m_Name: karoliina-left-up-s
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

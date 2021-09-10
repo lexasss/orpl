@@ -1,23 +1,11 @@
-direct_left_1_red_2
+straight_left_1_red_2
 averted_left_1_red_2
+
 down_left_1_red_2
+straight_left_1_red_2
 
-direct_left_1_red_2
 averted_left_1_blue_2
-down_right_1_red_3
+down_right_1_red_1
 
-direct_left_1_red_2
-averted_left_1_blue_3
-down_right_1_red_2
-
-direct_left_1_red_3
-averted_left_1_blue_2
-down_right_1_red_2
-
-direct_left_1_red_3
-averted_left_1_blue_2
-down_right_1_red_3
-
-direct_left_1_red_3
-averted_left_1_blue_3
-down_right_1_red_3
+straight_left_1_red_2
+averted_left_1_blue_1

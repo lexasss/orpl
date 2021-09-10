@@ -154,7 +154,7 @@ public class OrientationTask : MonoBehaviour, ITask
         }
         else
         {
-            throw new IndexOutOfRangeException($"NextState: orientation task is in unsupported state: {_taskState}");
+            //throw new IndexOutOfRangeException($"NextState: orientation task is in unsupported state: {_taskState}");
         }
     }
 
@@ -220,9 +220,10 @@ public class OrientationTask : MonoBehaviour, ITask
             _image.Show($"{actor}-{head}-up-{gaze[0]}");
             // _focusDetector.SetTrackingObject(_image.faceImage);
 
-            if (gaze == "direct" || gaze == "forward")
+            if (gaze == OrientationTrial.GazeDirections.Straight.ToString().ToLower() || 
+                gaze == OrientationTrial.GazeDirections.Forward.ToString().ToLower())
             {
-                _hrClient.OrientationGazeDirect(actor, head);
+                _hrClient.OrientationGazeStraight(actor, head);
             }
             else
             {

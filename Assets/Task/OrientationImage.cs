@@ -32,6 +32,8 @@ public class OrientationImage : MonoBehaviour
 
     public void Show(string aFace)
     {
+        Debug.Log($"IMG: {aFace}");
+
         if (_face != null)
         {
             _face.gameObject.SetActive(false);

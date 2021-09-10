@@ -11,9 +11,13 @@ public interface Trial
 
 public class OrientationTrial : Trial
 {
-    static readonly string[] ACTORS = new string[] { "anne", "jerita", "karoliina", "1clock", "2clock", "3clock" };
-    static readonly string[] HEAD_DIRECTIONS = new string[] { "left", "right" };
-    static readonly string[] GAZE_DIRECTIONS = new string[] { "direct", "averted", "forward", "backward" };
+    public enum Actors { Anne, Jerita, Karoliina, _1Clock, _2Clock, _3Clock }
+    public enum HeadDirections { Left, Right }
+    public enum GazeDirections { Straight, Averted, Forward, Backward }
+
+    static readonly string[] ACTORS = Enum.GetNames(typeof(Actors)).Select(s => s.Substring(s[0] == '_' ? 1 : 0).ToLower()).ToArray();    // new string[] { "anne", "jerita", "karoliina", "1clock", "2clock", "3clock" };
+    static readonly string[] HEAD_DIRECTIONS = Enum.GetNames(typeof(HeadDirections)).Select(s => s.ToLower()).ToArray();                  // new string[] { "left", "right" };
+    static readonly string[] GAZE_DIRECTIONS = Enum.GetNames(typeof(GazeDirections)).Select(s => s.ToLower()).ToArray();                  // new string[] { "straight", "averted", "forward", "backward" };
 
     public string Actor { get; private set; }
     public string Head { get; private set; }
@@ -54,11 +58,15 @@ public class OrientationTrial : Trial
 
 public class PlayingLadyTrial : Trial
 {
-    static readonly string[] GAZE_DIRECTIONS = new string[] { "down", "averted", "direct" };
-    static readonly string[] CAR_DIRECTIONS = new string[] { "left", "right" };
+    public enum CarColor { Red, Blue }
+    public enum CarDirections { Left, Right }
+    public enum GazeDirections { Down, Averted, Straight }
+
     static readonly int[] SLIDES = new int[] { 1, 2 };
-    static readonly string[] CAR_COLORS = new string[] { "red", "blue" };
     static readonly int[] CAR_RUNS = new int[] { 1, 2, 3 };
+    static readonly string[] GAZE_DIRECTIONS = Enum.GetNames(typeof(GazeDirections)).Select(s => s.ToLower()).ToArray();  // new string[] { "down", "averted", "straight" };
+    static readonly string[] CAR_DIRECTIONS = Enum.GetNames(typeof(CarDirections)).Select(s => s.ToLower()).ToArray();    // new string[] { "left", "right" };
+    static readonly string[] CAR_COLORS = Enum.GetNames(typeof(CarColor)).Select(s => s.ToLower()).ToArray();             // new string[] { "red", "blue" };
 
     public string Gaze { get; private set; }
     public string Direction { get; private set; }
