@@ -209,7 +209,7 @@ public class OrientationTask : MonoBehaviour, ITask
 
             _hrClient.OrientationGazeDownward(actor, head);
 
-            Invoke("NextState", gazeDownwardDuration);
+            Invoke(nameof(NextState), gazeDownwardDuration);
         }
         else if (_taskState == TaskState.GazeUp)
         {
@@ -230,7 +230,7 @@ public class OrientationTask : MonoBehaviour, ITask
                 _hrClient.OrientationGazeAverted(actor, head);
             }
 
-            Invoke("NextState", gazeUpwardDuration);
+            Invoke(nameof(NextState), gazeUpwardDuration);
         }
         else if (_taskState == TaskState.Finished)
         {
@@ -240,7 +240,7 @@ public class OrientationTask : MonoBehaviour, ITask
 
             DisplayRestingMedia();
 
-            Invoke("ResetState", INTER_TRIAL_MIN_DURATION);
+            Invoke(nameof(ResetState), INTER_TRIAL_MIN_DURATION);
         }
         else
         {
@@ -285,7 +285,7 @@ public class OrientationTask : MonoBehaviour, ITask
         _focusDetector.SetTrackingObject(null);
         if (_taskState == TaskState.AttentionGrabber)
         {
-            Invoke("NextState", DWELL_TIME_ATTENTION_GRABBER);
+            Invoke(nameof(NextState), DWELL_TIME_ATTENTION_GRABBER);
         }
     }
 }

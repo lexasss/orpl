@@ -165,7 +165,7 @@ public class HRClient : MonoBehaviour
         if (e.State == NetStation.State.CONNECTED)
         {
             connectButton.enabled = false;
-            Invoke("Begin", 1);
+            Invoke(nameof(Begin), 1);
         }
         else if (e.State == NetStation.State.NOT_CONNECTED || e.State == NetStation.State.FAILED_TO_CONNECT)
         {

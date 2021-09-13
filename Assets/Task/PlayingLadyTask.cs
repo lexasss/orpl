@@ -221,7 +221,7 @@ public class PlayingLadyTask : MonoBehaviour, ITask
 
             _focusDetector.SetTrackingObject(headArea);
 
-            Invoke("NextState", maxGazeWaitingTime);
+            Invoke(nameof(NextState), maxGazeWaitingTime);
         }
         else if (_taskState == TaskState.Second)
         {
@@ -253,7 +253,7 @@ public class PlayingLadyTask : MonoBehaviour, ITask
 
             DisplayRestingMedia();
 
-            Invoke("ResetState", INTER_TRIAL_MIN_DURATION);
+            Invoke(nameof(ResetState), INTER_TRIAL_MIN_DURATION);
         }
         else
         {
@@ -325,11 +325,11 @@ public class PlayingLadyTask : MonoBehaviour, ITask
 
         if (_taskState == TaskState.WaitingFaceGazed)
         {
-            CancelInvoke("NextState");
+            CancelInvoke(nameof(NextState));
 
             _hrClient.FixationOnFace();
 
-            Invoke("NextState", DWELL_TIME_SECOND_PART);
+            Invoke(nameof(NextState), DWELL_TIME_SECOND_PART);
         }
         else if (_taskState == TaskState.Second)
         {
