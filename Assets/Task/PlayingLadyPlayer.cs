@@ -49,11 +49,13 @@ public class PlayingLadyPlayer : MonoBehaviour
 
     public void PlayFirst()
     {
+        Debug.Log($"VIDEO: {_players[0].clip.name}");
         _players[0].Play();
     }
 
     public void PlaySecond()
     {
+        Debug.Log($"VIDEO: {_players[1].clip.name}");
         _players[1].Play();
     }
 

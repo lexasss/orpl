@@ -37,11 +37,11 @@ public class TobiiClient : MonoBehaviour
             if (!_isStreaming)
             {
                 _eyeTracker.GazeDataReceived += onGazeDataReceived;
-                InvokeRepeating("StreamData", 0.1f, 0.033f);
+                InvokeRepeating(nameof(StreamData), 0.1f, 0.033f);
             }
             else
             {
-                CancelInvoke("StreamData");
+                CancelInvoke(nameof(StreamData));
                 _eyeTracker.GazeDataReceived -= onGazeDataReceived;
             }
 
@@ -83,7 +83,7 @@ public class TobiiClient : MonoBehaviour
         }
         else
         {
-            Invoke("SearchEyeTrackers", 5);
+            Invoke(nameof(SearchEyeTrackers), 5);
         }
     }
 

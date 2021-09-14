@@ -89,42 +89,45 @@ public class HRClient : MonoBehaviour
 
     public void OrientationGazeDownward(string aActor, string aHead)
     {
-        SendEvent("Do" + aActor.ToUpper()[0] + aHead[0]);
+        var actorType = aActor[0] < 'A' ? 'c' : 'f'; // [c]lock or [f]ace
+        SendEvent("O" + actorType + aActor.ToUpper()[0] + aHead[0]);
     }
 
-    public void OrientationGazeDirect(string aActor, string aHead)
+    public void OrientationGazeStraight(string aActor, string aHead)
     {
-        SendEvent("Di" + aActor.ToUpper()[0] + aHead[0]);
+        var actorType = aActor[0] < 'A' ? 'e' : 's'; // [e]tenpain(clock) or [s]traight(face)
+        SendEvent("O" + actorType + aActor.ToUpper()[0] + aHead[0]);
     }
 
     public void OrientationGazeAverted(string aActor, string aHead)
     {
-        SendEvent("Av" + aActor.ToUpper()[0] + aHead[0]);
+        var actorType = aActor[0] < 'A' ? 't' : 'a'; // [t]aaksepain(clock) or [a]verted(face)
+        SendEvent("O" + actorType + aActor.ToUpper()[0] + aHead[0]);
     }
 
     public void PlayingLadyStarts(int aSlideCount)
     {
-        SendEvent($"Lst{aSlideCount}");
+        SendEvent($"P{aSlideCount}st");
     }
 
-    public void PlayingLadyPauses()
+    public void PlayingLadyPauses(int aSlide)
     {
-        SendEvent("Lpau");
+        SendEvent($"P{aSlide}pa");
     }
 
     public void PlayingLadyDown(int aSlide, string aDirection)
     {
-        SendEvent("Do" + aSlide.ToString() + aDirection[0]);
+        SendEvent($"P{aSlide}d{aDirection[0]}");
     }
 
-    public void PlayingLadyDirect(int aSlide, string aDirection)
+    public void PlayingLadyStraight(int aSlide, string aDirection)
     {
-        SendEvent("Di" + aSlide.ToString() + aDirection[0]);
+        SendEvent($"P{aSlide}s{aDirection[0]}");
     }
 
     public void PlayingLadyAverted(int aSlide, string aDirection)
     {
-        SendEvent("Av" + aSlide.ToString() + aDirection[0]);
+        SendEvent($"P{aSlide}a{aDirection[0]}");
     }
 
     public void FixationOnFace()
@@ -162,7 +165,7 @@ public class HRClient : MonoBehaviour
         if (e.State == NetStation.State.CONNECTED)
         {
             connectButton.enabled = false;
-            Invoke("Begin", 1);
+            Invoke(nameof(Begin), 1);
         }
         else if (e.State == NetStation.State.NOT_CONNECTED || e.State == NetStation.State.FAILED_TO_CONNECT)
         {

@@ -156,8 +156,8 @@ public class Tasks : MonoBehaviour
 
         infoDisplay.text = "starting...";
 
-        Invoke("PlayingLadyNextBlock", 0.5f);
-        // Invoke("OrientationNextBlock", 0.5f);
+        Invoke(nameof(PlayingLadyNextBlock), 0.5f);
+        // Invoke(nameof(OrientationNextBlock), 0.5f);
 
         _isLastBlock = false;
         _socialVideoOnly = false;
@@ -288,14 +288,14 @@ public class Tasks : MonoBehaviour
     void onPlayingLadyBlockFinished(object sender, BlockFinishedEventArgs e)
     {
         _currentTask = null;
-        Invoke("OrientationNextBlock", PAUSE_BETWEEN_BLOCKS);
+        Invoke(nameof(OrientationNextBlock), PAUSE_BETWEEN_BLOCKS);
     }
 
     void onPlayingLadyTrialCancelled(object sender, bool showInterruptionMedia)
     {
         if (showInterruptionMedia)
         {
-            Invoke("StartInterruption", 0.5f);
+            Invoke(nameof(StartInterruption), 0.5f);
         }
     }
 
@@ -305,29 +305,14 @@ public class Tasks : MonoBehaviour
         _isLastBlock = e.IsLastBlock;
 
         socialVideoPlayer.clip = _socialVideos.Next();
-        Invoke("PlaySocialVideo", PAUSE_BETWEEN_BLOCKS);
-
-        /*
-        if (e.IsLastBlock)
-        {
-            _gazeClient.ShowUI();
-            backgroundAudio.Stop();
-            playingLadyPlayer.gameObject.SetActive(false);
-            //Invoke("Finish", PAUSE_BETWEEN_BLOCKS);
-        }
-        else
-        {
-            socialVideoPlayer.clip = _socialVideos.Next();
-            Invoke("PlaySocialVideo", PAUSE_BETWEEN_BLOCKS);
-        }
-        */
+        Invoke(nameof(PlaySocialVideo), PAUSE_BETWEEN_BLOCKS);
     }
 
     void onOrientationTrialCancelled(object sender, bool showInterruptionMedia)
     {
         if (showInterruptionMedia)
         {
-            Invoke("StartInterruption", 0.5f);
+            Invoke(nameof(StartInterruption), 0.5f);
         }
     }
 
@@ -352,7 +337,7 @@ public class Tasks : MonoBehaviour
         }
         else
         {
-            Invoke("PlayingLadyNextBlock", PAUSE_BETWEEN_BLOCKS);
+            Invoke(nameof(PlayingLadyNextBlock), PAUSE_BETWEEN_BLOCKS);
         }
     }
 

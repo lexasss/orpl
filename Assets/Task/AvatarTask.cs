@@ -49,7 +49,7 @@ public class AvatarTask : MonoBehaviour
                 _isWaitingForFinish = false;
 
                 _hrClient.StopAvatarTask(_avatarID, _modeID);
-                CancelInvoke("Signal");
+                CancelInvoke(nameof(Signal));
 
                 _audioToFinish = null;
                 curtain.gameObject.SetActive(false);
@@ -63,7 +63,7 @@ public class AvatarTask : MonoBehaviour
         _avatarID = 'P';
         _modeID = 'd';
 
-        Invoke("Flash", flashDelay);
+        Invoke(nameof(Flash), flashDelay);
 
         curtain.gameObject.SetActive(true);
     }
@@ -74,7 +74,7 @@ public class AvatarTask : MonoBehaviour
         _avatarID = 'P';
         _modeID = 'a';
 
-        Invoke("Flash", flashDelay);
+        Invoke(nameof(Flash), flashDelay);
 
         curtain.gameObject.SetActive(true);
     }
@@ -85,7 +85,7 @@ public class AvatarTask : MonoBehaviour
         _avatarID = 'N';
         _modeID = 'd';
 
-        Invoke("Flash", flashDelay);
+        Invoke(nameof(Flash), flashDelay);
 
         curtain.gameObject.SetActive(true);
     }
@@ -96,7 +96,7 @@ public class AvatarTask : MonoBehaviour
         _avatarID = 'N';
         _modeID = 'a';
 
-        Invoke("Flash", flashDelay);
+        Invoke(nameof(Flash), flashDelay);
 
         curtain.gameObject.SetActive(true);
     }
@@ -104,9 +104,9 @@ public class AvatarTask : MonoBehaviour
     private void Flash()
     {
         curtain.color = flashColor;
-        Invoke("SetCurtain", flashDuration);
+        Invoke(nameof(SetCurtain), flashDuration);
 
-        Invoke("StartListeningForFinish", audioDelay);
+        Invoke(nameof(StartListeningForFinish), audioDelay);
         _hrClient.StartAvatarTask(_avatarID, _modeID);
     }
 
@@ -119,7 +119,7 @@ public class AvatarTask : MonoBehaviour
 
         _audioToFinish.Play();
 
-        Invoke("Signal", modeDuration);
+        Invoke(nameof(Signal), modeDuration);
     }
 
     private void Signal()
@@ -127,11 +127,11 @@ public class AvatarTask : MonoBehaviour
         _isAvertMode = !_isAvertMode;
         _hrClient.AvatarChangeInteraction(_avatarID, _isAvertMode ? 'a' : 'd');
 
-        Invoke("Signal", modeDuration);
+        Invoke(nameof(Signal), modeDuration);
 
         // flashing at each signal
         // curtain.color = flashColor;
-        // Invoke("SetCurtain", FlashDuration);
+        // Invoke(nameof(SetCurtain), FlashDuration);
     }
 
     private void SetCurtain()

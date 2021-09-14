@@ -62,6 +62,6 @@ public class AttentionGrabber : MonoBehaviour
 
         _image.transform.localScale = new Vector3(_scale, _scale, 1f);
 
-        Debug.Log(_scale);
+        //Debug.Log(_scale);
     }
 }

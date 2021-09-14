@@ -80,7 +80,7 @@ public class GazeSimulator : MonoBehaviour
         if ((_state.value & (int)GazeIO.StateValue.Tracking) == 0)
         {
             _state.value |= (int)GazeIO.StateValue.Tracking;
-            InvokeRepeating("EmitSample", SAMPLING_INTERVAL, SAMPLING_INTERVAL);
+            InvokeRepeating(nameof(EmitSample), SAMPLING_INTERVAL, SAMPLING_INTERVAL);
         }
         else
         {

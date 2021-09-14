@@ -154,7 +154,7 @@ public class OrientationTask : MonoBehaviour, ITask
         }
         else
         {
-            throw new IndexOutOfRangeException($"NextState: orientation task is in unsupported state: {_taskState}");
+            //throw new IndexOutOfRangeException($"NextState: orientation task is in unsupported state: {_taskState}");
         }
     }
 
@@ -209,7 +209,7 @@ public class OrientationTask : MonoBehaviour, ITask
 
             _hrClient.OrientationGazeDownward(actor, head);
 
-            Invoke("NextState", gazeDownwardDuration);
+            Invoke(nameof(NextState), gazeDownwardDuration);
         }
         else if (_taskState == TaskState.GazeUp)
         {
@@ -220,16 +220,17 @@ public class OrientationTask : MonoBehaviour, ITask
             _image.Show($"{actor}-{head}-up-{gaze[0]}");
             // _focusDetector.SetTrackingObject(_image.faceImage);
 
-            if (gaze == "direct" || gaze == "forward")
+            if (gaze == OrientationTrial.GazeDirections.Straight.ToString().ToLower() || 
+                gaze == OrientationTrial.GazeDirections.Forward.ToString().ToLower())
             {
-                _hrClient.OrientationGazeDirect(actor, head);
+                _hrClient.OrientationGazeStraight(actor, head);
             }
             else
             {
                 _hrClient.OrientationGazeAverted(actor, head);
             }
 
-            Invoke("NextState", gazeUpwardDuration);
+            Invoke(nameof(NextState), gazeUpwardDuration);
         }
         else if (_taskState == TaskState.Finished)
         {
@@ -239,7 +240,7 @@ public class OrientationTask : MonoBehaviour, ITask
 
             DisplayRestingMedia();
 
-            Invoke("ResetState", INTER_TRIAL_MIN_DURATION);
+            Invoke(nameof(ResetState), INTER_TRIAL_MIN_DURATION);
         }
         else
         {
@@ -284,7 +285,7 @@ public class OrientationTask : MonoBehaviour, ITask
         _focusDetector.SetTrackingObject(null);
         if (_taskState == TaskState.AttentionGrabber)
         {
-            Invoke("NextState", DWELL_TIME_ATTENTION_GRABBER);
+            Invoke(nameof(NextState), DWELL_TIME_ATTENTION_GRABBER);
         }
     }
 }
