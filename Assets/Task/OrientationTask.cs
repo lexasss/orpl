@@ -18,8 +18,6 @@ public class OrientationTask : MonoBehaviour, ITask
     public event EventHandler<BlockFinishedEventArgs> BlockFinished = delegate { };
     public event EventHandler<bool> Cancelled = delegate { };   // bool: requests to display interruption media
 
-    public bool IsRunning { get { return _isRunning; } }
-
     // definitions
 
     const string TRIALS_FILENAME = "orientation.txt";
@@ -50,7 +48,6 @@ public class OrientationTask : MonoBehaviour, ITask
 
     Trials<OrientationTrial> _trials;
     OrientationTrial _trial = null;
-    bool _isRunning = false;
     bool _isEnabled = false;
 
     AudioSource trialDone { get { return sounds[0]; } }
@@ -79,18 +76,19 @@ public class OrientationTask : MonoBehaviour, ITask
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            _isRunning = true;
-
-            if (_taskState == TaskState.NotStarted || _taskState == TaskState.AttentionGrabber)
+            if (_taskState == TaskState.NotStarted)
             {
                 HideRestingMedia();
                 NextState();
             }
+            else if (_taskState == TaskState.AttentionGrabber)
+            {
+                NextState();
+            }
         }
-
-        if (_taskState != TaskState.NotStarted && _taskState != TaskState.Finished)
+        else if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (_taskState != TaskState.NotStarted && _taskState != TaskState.Finished)
             {
                 CancelTrial();
             }
@@ -169,7 +167,6 @@ public class OrientationTask : MonoBehaviour, ITask
         }
         else
         {
-            _isRunning = false;
             HideRestingMedia();
 
             blockDone.Play();

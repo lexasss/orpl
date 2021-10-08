@@ -51,6 +51,7 @@ public class Tasks : MonoBehaviour
     GazeClient _gazeClient;
 
     bool _isLastBlock = false;
+    bool _isWaitingSocialVideo = false;
     bool _socialVideoOnly;
     SocialVideos _socialVideos;
 
@@ -110,7 +111,7 @@ public class Tasks : MonoBehaviour
                 _currentTask?.DisplayRestingMedia(true);
             }
         }
-        if (Input.GetKey(KeyCode.Space))
+        else if (Input.GetKey(KeyCode.Space))
         {
             if (interruptionImage.activeSelf)
             {
@@ -119,6 +120,12 @@ public class Tasks : MonoBehaviour
             else if (interruptionPlayer.isPlaying)
             {
                 interruptionPlayer.Stop();
+            }
+            else if (_isWaitingSocialVideo)
+            {
+                _isWaitingSocialVideo = false;
+                socialVideoPlayer.clip = _socialVideos.Next();
+                PlaySocialVideo();
             }
         }
     }
@@ -303,9 +310,7 @@ public class Tasks : MonoBehaviour
     {
         _currentTask = null;
         _isLastBlock = e.IsLastBlock;
-
-        socialVideoPlayer.clip = _socialVideos.Next();
-        Invoke(nameof(PlaySocialVideo), PAUSE_BETWEEN_BLOCKS);
+        _isWaitingSocialVideo = true;
     }
 
     void onOrientationTrialCancelled(object sender, bool showInterruptionMedia)
